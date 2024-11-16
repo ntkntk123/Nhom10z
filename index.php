@@ -13,13 +13,6 @@ require_once './models/Student.php';
 // Route
 $act = $_GET['act'] ?? '/';
 
-// Để bảo bảo tính chất chỉ gọi 1 hàm Controller để xử lý request thì mình sử dụng match
-
 match ($act) {
-    // Trang chủ
-    // vis fu 123
-    //akksaksakaks
-    //neqwa
-
-    //tesst cho dunmgg
+    '/' => (new HomeController())->sanpham(),
 };
