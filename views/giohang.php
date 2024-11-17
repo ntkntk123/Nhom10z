@@ -8,27 +8,38 @@ if (!isset($_SESSION['username'])) {
 
 require_once 'db.php';
 
-$stmt = $conn->prepare("SELECT id_khach_hang FROM khach_hang WHERE username = :username");
-$stmt->bindParam(':username', $_SESSION['username']);
-$stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$user) {
-    echo "Không tìm thấy người dùng!";
-    exit;
+// Kiểm tra nếu giỏ hàng tồn tại trong session
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
 }
 
-$id_khach_hang = $user['id_khach_hang'];
-
-$stmt = $conn->prepare("SELECT * FROM don_hang WHERE id_khach_hang = :id_khach_hang");
-$stmt->bindParam(':id_khach_hang', $id_khach_hang);
-$stmt->execute();
-$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (!$orders) {
-    echo "Không có đơn hàng nào!";
-    exit;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['remove'])) {
+        $product_id = $_POST['product_id'];
+        unset($_SESSION['cart'][$product_id]); // Xóa sản phẩm khỏi giỏ hàng
+    }
+    
+    if (isset($_POST['update'])) {
+        $product_id = $_POST['product_id'];
+        $quantity = $_POST['quantity'];
+        if ($quantity > 0) {
+            $_SESSION['cart'][$product_id]['quantity'] = $quantity; // Cập nhật số lượng
+        }
+    }
 }
+
+// Lấy thông tin sản phẩm từ giỏ hàng
+$product_ids = array_keys($_SESSION['cart']);
+$products = [];
+
+if (!empty($product_ids)) {
+    $stmt = $conn->prepare("SELECT * FROM san_pham WHERE id IN (" . implode(',', $product_ids) . ")");
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $products = [];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -36,14 +47,12 @@ if (!$orders) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Sử Đơn Hàng</title>
+    <title>Giỏ Hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
         }
 
         header {
@@ -52,38 +61,7 @@ if (!$orders) {
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .logo {
-            width: 40px;
-            height: 40px;
-            background-color: #007bff;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .container nav {
-            font-size: 16px;
-            display: flex;
-            gap: 20px;
-        }
-
-        header .container nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        header .container nav a:hover {
-            color: #007bff;
-        }
-
-        .order-history-table {
+        .cart-table {
             background-color: #fff;
             padding: 30px;
             border-radius: 10px;
@@ -91,30 +69,27 @@ if (!$orders) {
             margin-bottom: 30px;
         }
 
-        .order-history-table h2 {
+        .cart-table h2 {
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 15px;
             color: #007bff;
         }
 
-        .order-history-table th, .order-history-table td {
+        .cart-table th, .cart-table td {
             text-align: center;
             vertical-align: middle;
         }
 
-        .order-history-table thead {
+        .cart-table thead {
             background-color: #007bff;
             color: white;
         }
 
-        .order-history-table .badge {
-            font-size: 0.9rem;
-        }
-
-        .order-history-table tbody tr:hover {
+        .cart-table tbody tr:hover {
             background-color: #f8f9fa;
         }
+
         footer {
             background-color: #f1f1f1;
             padding: 40px 0;
@@ -153,17 +128,6 @@ if (!$orders) {
 
         footer .feedback-button:hover {
             background-color: #c82333;
-        }
-
-        @media (max-width: 768px) {
-            header .container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .order-history-table {
-                padding: 20px;
-            }
         }
     </style>
 </head>
@@ -206,80 +170,74 @@ if (!$orders) {
         </div>
     </div>
 </header>
+
 <div class="container my-5">
-    <div class="order-history-table">
-        <h2 class="text-center">Lịch Sử Đơn Hàng</h2>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Mã Đơn Hàng</th>
-                    <th>Ngày Đặt Hàng</th>
-                    <th>Tổng Giá</th>
-                    <th>Trạng Thái</th>
-                    <th>Địa Chỉ Nhận Hàng</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if (count($orders) > 0) {
+    <div class="cart-table">
+        <h2 class="text-center">Giỏ Hàng</h2>
+        <?php if (empty($products)): ?>
+            <p class="text-center">Giỏ hàng của bạn hiện tại trống.</p>
+        <?php else: ?>
+        <form method="POST" action="">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Sản Phẩm</th>
+                        <th>Số Lượng</th>
+                        <th>Giá</th>
+                        <th>Tổng Tiền</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $total_price = 0;
                     $stt = 1;
-                    foreach ($orders as $order) {
-                        switch ($order['trang_thai']) {
-                            case 0:
-                                $status = "Đang chuẩn bị hàng";
-                                break;
-                            case 1:
-                                $status = "Đang giao";
-                                break;
-                            case 2:
-                                $status = "Đã giao thành công";
-                                break;
-                            default:
-                                $status = "Không xác định";
-                        }
-
-                        echo "<tr>";
-                        echo "<td>" . $stt . "</td>";
-                        echo "<td>" . htmlspecialchars($order['id_don_hang']) . "</td>";
-                        echo "<td>" . htmlspecialchars($order['ngay_dat_hang']) . "</td>";
-                        echo "<td>" . number_format($order['tong_gia'], 0, ',', '.') . " VNĐ</td>";
-                        echo "<td><span class='badge bg-" . ($order['trang_thai'] == 0 ? 'info' : ($order['trang_thai'] == 1 ? 'warning' : 'success')) . "'>" . $status . "</span></td>";
-                        echo "<td>" . htmlspecialchars($order['dia_chi_nhan_hang']) . "</td>";
-                        echo "</tr>";
-
-                        $stt++;
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
+                    foreach ($products as $product) {
+                        $product_id = $product['id'];
+                        $quantity = $_SESSION['cart'][$product_id]['quantity'];
+                        $price = $product['price'];
+                        $total = $price * $quantity;
+                        $total_price += $total;
+                    ?>
+                    <tr>
+                        <td><?php echo $stt++; ?></td>
+                        <td><?php echo htmlspecialchars($product['name']); ?></td>
+                        <td>
+                            <input type="number" name="quantity" value="<?php echo $quantity; ?>" min="1" max="100">
+                            <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                        </td>
+                        <td><?php echo number_format($price, 0, ',', '.') . " VNĐ"; ?></td>
+                        <td><?php echo number_format($total, 0, ',', '.') . " VNĐ"; ?></td>
+                        <td>
+                            <button type="submit" name="update" class="btn btn-warning btn-sm">Cập nhật</button>
+                            <button type="submit" name="remove" class="btn btn-danger btn-sm" value="remove">Xóa</button>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>Tổng Tiền:</strong></td>
+                        <td><strong><?php echo number_format($total_price, 0, ',', '.') . " VNĐ"; ?></strong></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="checkout.php" class="btn btn-success btn-lg d-block mx-auto">Thanh Toán</a>
+        </form>
+        <?php endif; ?>
     </div>
 </div>
-<br><br><br><br>
+
 <footer>
-    <div class="container d-flex justify-content-between">
+    <div class="container text-center">
         <div class="footer-section">
-            <h3>Hotline</h3>
-            <p>0888292005</p>
-            <p>Email: nhom10@gmail.com</p>
-        </div>
-        <div class="footer-section">
-            <h3>About Us</h3>
-            <p>Our story and team</p>
-            <p>Our factory</p>
-            <p>Code of conduct</p>
-        </div>
-        <div class="footer-section">
-            <h3>Contact Address</h3>
-            <p>Tòa P, Tầng 4, Phòng P404</p>
-            <p>FPT Polytechnic, Trịnh Văn Bô, Hà Nội</p>
+            <h3>Feedback</h3>
+            <p>Hãy cho chúng tôi biết nếu có bất kỳ thắc mắc nào về sản phẩm.</p>
+            <button class="feedback-button">Gửi Phản Hồi</button>
         </div>
     </div>
-    <button class="feedback-button">Give Feedback</button>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

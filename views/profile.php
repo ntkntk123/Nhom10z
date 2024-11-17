@@ -1,32 +1,27 @@
 <?php
+// profile.php
+
+// Khởi động session để kiểm tra nếu người dùng đã đăng nhập
 session_start();
 
+// Kiểm tra nếu người dùng chưa đăng nhập thì chuyển hướng đến trang login
 if (!isset($_SESSION['username'])) {
     header("Location: ./login/login.php");
     exit;
 }
 
+// Bao gồm file kết nối cơ sở dữ liệu
 require_once 'db.php';
 
-$stmt = $conn->prepare("SELECT id_khach_hang FROM khach_hang WHERE username = :username");
+// Lấy thông tin người dùng từ cơ sở dữ liệu
+$stmt = $conn->prepare("SELECT * FROM khach_hang WHERE username = :username");
 $stmt->bindParam(':username', $_SESSION['username']);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Kiểm tra nếu có dữ liệu trả về
 if (!$user) {
-    echo "Không tìm thấy người dùng!";
-    exit;
-}
-
-$id_khach_hang = $user['id_khach_hang'];
-
-$stmt = $conn->prepare("SELECT * FROM don_hang WHERE id_khach_hang = :id_khach_hang");
-$stmt->bindParam(':id_khach_hang', $id_khach_hang);
-$stmt->execute();
-$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (!$orders) {
-    echo "Không có đơn hàng nào!";
+    echo "Không tìm thấy thông tin người dùng!";
     exit;
 }
 ?>
@@ -36,9 +31,10 @@ if (!$orders) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Sử Đơn Hàng</title>
+    <title>Thông Tin Khách Hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Chung cho toàn bộ trang */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
@@ -60,6 +56,7 @@ if (!$orders) {
             margin-right: 10px;
         }
 
+        /* Header Navigation */
         header .container {
             display: flex;
             justify-content: space-between;
@@ -83,7 +80,8 @@ if (!$orders) {
             color: #007bff;
         }
 
-        .order-history-table {
+        /* Tạo khung đẹp cho phần thông tin người dùng */
+        .profile-card {
             background-color: #fff;
             padding: 30px;
             border-radius: 10px;
@@ -91,84 +89,106 @@ if (!$orders) {
             margin-bottom: 30px;
         }
 
-        .order-history-table h2 {
+        .profile-card h2 {
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 15px;
             color: #007bff;
         }
 
-        .order-history-table th, .order-history-table td {
-            text-align: center;
-            vertical-align: middle;
+        .profile-card .user-info {
+            margin-bottom: 20px;
         }
 
-        .order-history-table thead {
-            background-color: #007bff;
-            color: white;
+        .profile-card .user-info p {
+            font-size: 16px;
+            color: #333;
+            margin: 8px 0;
         }
 
-        .order-history-table .badge {
-            font-size: 0.9rem;
+        .profile-card .user-info strong {
+            color: #007bff;
         }
 
-        .order-history-table tbody tr:hover {
-            background-color: #f8f9fa;
+        /* Cải thiện style nút đăng xuất */
+        .logout-btn {
+            background-color: #ff4d4d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
+        .logout-btn:hover {
+            background-color: #ff3333;
+        }
+
+        /* Footer */
         footer {
             background-color: #f1f1f1;
-            padding: 40px 0;
-            margin-top: 50px;
+            padding: 30px 0;
+            margin-top: 40px;
         }
 
-        footer .footer-section h3 {
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        footer h3 {
             font-size: 18px;
             color: #333;
-            margin-bottom: 15px;
         }
 
-        footer .footer-section p {
-            color: #666;
+        footer p {
             font-size: 14px;
-        }
-
-        footer .footer-section a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        footer .footer-section a:hover {
-            text-decoration: underline;
+            color: #777;
         }
 
         footer .feedback-button {
-            background-color: #dc3545;
-            color: #fff;
-            font-size: 16px;
+            margin-top: 20px;
+            background-color: #ff4d4d;
+            color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 5px;
+            padding: 12px;
             width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         footer .feedback-button:hover {
-            background-color: #c82333;
+            background-color: #ff3333;
         }
 
-        @media (max-width: 768px) {
-            header .container {
-                flex-direction: column;
-                align-items: flex-start;
+        /* Responsive */
+        @media (max-width: 600px) {
+            .profile-card {
+                padding: 20px;
             }
 
-            .order-history-table {
-                padding: 20px;
+            .profile-card h2 {
+                font-size: 24px;
+            }
+
+            .profile-card .user-info p {
+                font-size: 14px;
+            }
+
+            .logout-btn {
+                padding: 8px 12px;
+                font-size: 14px;
             }
         }
     </style>
 </head>
+
 <body>
 
+<!-- Phần Header -->
 <header class="bg-white py-3 border-bottom">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="logo"></div>
@@ -181,6 +201,7 @@ if (!$orders) {
         <div class="d-flex gap-3">
             <input type="text" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="width: 250px;">
             <div class="d-flex gap-4 align-items-center">
+                <!-- Kiểm tra nếu người dùng đã đăng nhập -->
                 <?php if (isset($_SESSION['username'])): ?>
                     <div class="dropdown">
                         <span class="text-dark fw-bold dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -195,68 +216,45 @@ if (!$orders) {
                             <li><a class="dropdown-item" href="?act=logout">Đăng xuất</a></li>
                         </ul>
                     </div>
+
+                    <!-- Kiểm tra quyền admin -->
+                    <?php if ($_SESSION['role'] == 1): ?>
+                        <li class="nav-item">
+                            <a href="?act=admin" class="text-decoration-none text-dark fw-bold">Quản lý admin</a>
+                        </li>
+                    <?php endif; ?>
                 <?php else: ?>
+                    <!-- Nếu chưa đăng nhập, hiển thị Đăng nhập và Đăng ký -->
                     <a href="?act=login" class="text-decoration-none text-dark text-center">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeUUz1pW3PpdJVcOvcwfYWdKFK4wBGL_UvcA&s" alt="User Icon" class="user-icon bg-secondary rounded-circle" style="width: 40px; height: 40px;">
                         <br>
                         <small>Đăng nhập</small>
+                    </a>
+                    <a href="?act=formRegister" class="text-decoration-none text-dark text-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeUUz1pW3PpdJVcOvcwfYWdKFK4wBGL_UvcA&s" alt="User Icon" class="user-icon bg-secondary rounded-circle" style="width: 40px; height: 40px;">
+                        <br>
+                        <small>Đăng ký</small>
                     </a>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </header>
+<!-- Phần Nội Dung -->
 <div class="container my-5">
-    <div class="order-history-table">
-        <h2 class="text-center">Lịch Sử Đơn Hàng</h2>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Mã Đơn Hàng</th>
-                    <th>Ngày Đặt Hàng</th>
-                    <th>Tổng Giá</th>
-                    <th>Trạng Thái</th>
-                    <th>Địa Chỉ Nhận Hàng</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if (count($orders) > 0) {
-                    $stt = 1;
-                    foreach ($orders as $order) {
-                        switch ($order['trang_thai']) {
-                            case 0:
-                                $status = "Đang chuẩn bị hàng";
-                                break;
-                            case 1:
-                                $status = "Đang giao";
-                                break;
-                            case 2:
-                                $status = "Đã giao thành công";
-                                break;
-                            default:
-                                $status = "Không xác định";
-                        }
+    <div class="profile-card">
+        <h2 class="text-center">Thông Tin Khách Hàng</h2>
+        <div class="user-info">
+            <p><strong>Tên:</strong> <?php echo htmlspecialchars($user['ten_khach_hang']); ?></p>
+            <p><strong>Phone:</strong> <?php $user['phone'] ?></p>
+            <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+            <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
+        </div>
 
-                        echo "<tr>";
-                        echo "<td>" . $stt . "</td>";
-                        echo "<td>" . htmlspecialchars($order['id_don_hang']) . "</td>";
-                        echo "<td>" . htmlspecialchars($order['ngay_dat_hang']) . "</td>";
-                        echo "<td>" . number_format($order['tong_gia'], 0, ',', '.') . " VNĐ</td>";
-                        echo "<td><span class='badge bg-" . ($order['trang_thai'] == 0 ? 'info' : ($order['trang_thai'] == 1 ? 'warning' : 'success')) . "'>" . $status . "</span></td>";
-                        echo "<td>" . htmlspecialchars($order['dia_chi_nhan_hang']) . "</td>";
-                        echo "</tr>";
-
-                        $stt++;
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
     </div>
 </div>
-<br><br><br><br>
+
+<!-- Phần Footer -->
 <footer>
     <div class="container d-flex justify-content-between">
         <div class="footer-section">
@@ -276,7 +274,7 @@ if (!$orders) {
             <p>FPT Polytechnic, Trịnh Văn Bô, Hà Nội</p>
         </div>
     </div>
-    <button class="feedback-button">Give Feedback</button>
+    <button class="feedback-button btn btn-danger w-100">Give Feedback</button>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

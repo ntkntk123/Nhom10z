@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,27 +58,70 @@
             background-color: #f1f1f1;
             padding: 20px;
         }
+
+        /* Custom CSS for the user dropdown */
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <header class="bg-white py-3 border-bottom">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="logo"></div>
-            <nav class="d-flex gap-4">
-                <a href="#" class="text-decoration-none text-dark fw-bold">Sale 50%</a>
-                <a href="#" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
-                <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
-                <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
-            </nav>
-            <div class="d-flex gap-3">
-                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="width: 250px;">
-                <div class="d-flex gap-2">
-                    <div class="cart-icon bg-secondary rounded-circle" style="width: 24px; height: 24px;"></div>
-                    <div class="user-icon bg-secondary rounded-circle" style="width: 24px; height: 24px;"></div>
-                </div>
+<header class="bg-white py-3 border-bottom">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo"></div>
+        <nav class="d-flex gap-4">
+            <a href="#" class="text-decoration-none text-dark fw-bold">Sale 50%</a>
+            <a href="#" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
+            <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
+            <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
+        </nav>
+        <div class="d-flex gap-3">
+            <input type="text" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="width: 250px;">
+            <div class="d-flex gap-4 align-items-center">
+                <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                <?php if (isset($_SESSION['username'])): ?>
+                    <div class="dropdown">
+                        <span class="text-dark fw-bold dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Chào mừng, <?php echo $_SESSION['username']; ?>!
+                        </span>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="?act=profile">Thông tin khách hàng</a></li>
+                            <li><a class="dropdown-item" href="?act=lsu">Lịch sử mua hàng</a></li>
+                            <li><a class="dropdown-item" href="?act=cart">Giỏ hàng</a></li>
+                            <li><a class="dropdown-item" href="?act=change_password">Đổi mật khẩu</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="?act=logout">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Kiểm tra quyền admin -->
+                    <?php if ($_SESSION['role'] == 1): ?>
+                        <li class="nav-item">
+                            <a href="?act=admin" class="text-decoration-none text-dark fw-bold">Quản lý admin</a>
+                        </li>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <!-- Nếu chưa đăng nhập, hiển thị Đăng nhập và Đăng ký -->
+                    <a href="?act=login" class="text-decoration-none text-dark text-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeUUz1pW3PpdJVcOvcwfYWdKFK4wBGL_UvcA&s" alt="User Icon" class="user-icon bg-secondary rounded-circle" style="width: 40px; height: 40px;">
+                        <br>
+                        <small>Đăng nhập</small>
+                    </a>
+                    <a href="?act=formRegister" class="text-decoration-none text-dark text-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeUUz1pW3PpdJVcOvcwfYWdKFK4wBGL_UvcA&s" alt="User Icon" class="user-icon bg-secondary rounded-circle" style="width: 40px; height: 40px;">
+                        <br>
+                        <small>Đăng ký</small>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
-    </header>
+    </div>
+</header>
+
     <div class="slideshow-container">
         <div class="slides">
             <img src="https://via.placeholder.com/800x400?text=New+Arrivals" alt="Slide 1">
@@ -97,10 +144,12 @@
                         <div class="card h-100">
                             <img width="225px" height="225px" src="<?php echo htmlspecialchars($product['hinh_anh']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($product['ten_san_pham']); ?>">
                             <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['ten_san_pham']); ?></h5>
-                                <p class="card-text"><strong><?php echo number_format($product['gia'], 0, ',', '.') . " VND"; ?></strong></p>
-                                <a href="#" class="btn btn-outline-primary">Mua ngay</a>
-                                <a href="#" class="btn btn-outline-secondary">Thêm vào giỏ hàng</a>
+                                <h5 style="text-align:center;" class="card-title"><?php echo htmlspecialchars($product['ten_san_pham']); ?></h5>
+                                <p style="text-align:center;" class="card-text"><strong><?php echo number_format($product['gia'], 0, ',', '.') . " VND"; ?></strong></p>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <a style="font-size:15px" href="#" class="btn btn-outline-primary">Mua ngay</a>
+                                    <a style="font-size:15px" href="#" class="btn btn-outline-secondary">Thêm vào giỏ hàng</a>
+                                </div>
                             </div>
                         </div>
                     </div>
