@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,6 +69,25 @@
                 <a href="#" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
                 <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
                 <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
+                <a href="?act=login" class="text-decoration-none text-dark fw-bold">Đăng nhập</a>
+                <?php if (isset($_SESSION['username'])) {
+            echo "Chào mừng, " . $_SESSION['username'] . "!";
+            echo ' <a href="?act=logout" class="text-decoration-none text-dark fw-bold">Đăng xuat</a>';
+            
+          } ?>
+         
+                <?php
+
+if (isset($_SESSION['username'])) {
+  $role = $_SESSION['role'];
+  if ($role == 1) {
+    echo  ' <li class="nav-item">
+  <a  href="?act=admin">Quản lí admin</a>
+</li>';
+ 
+
+}}
+?>
             </nav>
             <div class="d-flex gap-3">
                 <input type="text" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="width: 250px;">
