@@ -54,11 +54,12 @@ class UserController{
         if (isset($_POST['username'])) {
             $user = $_POST['username'];
             $ten_khach_hang=$_POST['ten_khach_hang'];
+            $phone=$_POST['phone'];
             $email = $_POST['email'];
             $pass=$_POST['password'];
             $pass2=$_POST['password2'];
       
-            if ($this->modelUser->postRegister($ten_khach_hang, $user,  $pass, $email, $pass2)) {
+            if ($this->modelUser->postRegister($ten_khach_hang, $user,  $pass,$phone, $email, $pass2)) {
                 header("Location: ./");
             }
         }

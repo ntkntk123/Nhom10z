@@ -29,13 +29,13 @@ class User{
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function postRegister($ten_khach_hang, $user,  $pass, $email, $pass2)
+    public function postRegister($ten_khach_hang, $user,  $pass, $phone, $email, $pass2)
     {
         try {
-            $sql = 'INSERT INTO khach_hang ( ten_khach_hang, username,  password, email)
-                VALUES(:ten_khach_hang, :username, :password, :email)';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':ten_khach_hang'=>$ten_khach_hang, ':username' => $user,  ':email' => $email, ':password' => $pass]);
+            $sql = 'INSERT INTO khach_hang ( ten_khach_hang, username,  password, phone, email)
+                VALUES(:ten_khach_hang, :username, :password, :phone, :email)';
+            $stmt = $this->conn->prepare(query: $sql);
+            $stmt->execute([':ten_khach_hang'=>$ten_khach_hang, ':username' => $user,  ':email' => $email, ':phone'=>$phone , ':password' => $pass]);
             return true;
         } catch (Exception $e) {
             echo "Lỗi: " . $e->getMessage();

@@ -17,6 +17,9 @@ $act = $_GET['act'] ?? '/';
 
 match ($act) {
     '/' => (new HomeController())->sanpham(),
+    'profile' => (new HomeController())->profile(),
+    'cart' => (new HomeController())->cart(),
+    'lsu' => (new HomeController())->lsu(),
     'login'=>(new UserController())->login(),
     'logout'=>(new UserController())->logout(),
 
