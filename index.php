@@ -19,6 +19,9 @@ $act = $_GET['act'] ?? '/';
 
 match ($act) {
     '/' => (new HomeController())->sanpham(),
+    'profile' => (new HomeController())->profile(),
+    'cart' => (new HomeController())->cart(),
+    'lsu' => (new HomeController())->lsu(),
     'login'=>(new UserController())->login(),
     'logout'=>(new UserController())->logout(),
 
@@ -30,6 +33,7 @@ match ($act) {
 
     //phần user
     'quan-li-user'=>(new UserController())->listUser(),
+    'formAddUser'=>(new UserController())->formAddUser(),
     'formUpdateUser'=>(new UserController())->formUpdateUser(),
     'updateUser'=>(new UserController())->postUpdateUser(),
     'deleteUser'=>(new UserController())->deleteUser(),
@@ -39,4 +43,10 @@ match ($act) {
     // 'quan-li-danh-muc'=>(new danhmucController())->danhmuc(),
     // 'form-add-danh-muc'=>(new danhmucController())->formDanhMuc(),
     // 'post-add-danh-muc'=>(new danhmucController())->postAddDanhMuc(),
+
+
+    //sản phẩm
+    'quanlisanpham'=>(new HomeController())->quanLiSanPham(),
+    'formAddSanPham'=>(new HomeController())->formAddSanPham(),
+    'post-add-sanpham'=>(new HomeController())->postAddSanPham(),
 };

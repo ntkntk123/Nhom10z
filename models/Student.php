@@ -54,15 +54,19 @@ class Products
         }
     }
 
-    public function getAllComments() {
-        $stmt = $this->conn->prepare("SELECT * FROM binh_luan ORDER BY created_at DESC");
-        $stmt->execute();
-        return $stmt->fetchAll();
+
+    
+
+    public function postAddSanPham($ma_san_pham, $ten_san_pham, $id_danh_muc, $mo_ta, $gia, $trang_thai, $so_luong, $hinh_anh){
+        try {
+            $sql = 'INSERT INTO san_pham (ma_san_pham, ten_san_pham, id_danh_muc, mo_ta, gia, trang_thai, so_luong, hinh_anh)
+            VALUES(:ma_san_pham, :ten_san_pham, :id_danh_muc, :mo_ta, :gia, :trang_thai, :so_luong, :hinh_anh)';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':ma_san_pham'=>$ma_san_pham, ':ten_san_pham'=>$ten_san_pham, ':id_danh_muc'=>$id_danh_muc, ':gia'=>$gia, ':trang_thai'=>$trang_thai,':mo_ta'=>$mo_ta, ':so_luong'=>$so_luong , ':hinh_anh'=>$hinh_anh]);
+            return true;
+        } catch (Exception $e) {
+            echo "Lỗi: ". $e->getMessage();
+        }
     }
 
-    public function addComment($id_khach_hang, $id_san_pham, $noi_dung) {
-        $stmt = $this->conn->prepare("INSERT INTO binh_luan (id_khach_hang, id_san_pham, noi_dung, created_at) VALUES (:author, :id_san_pham, :noi_dung, NOW())");
-        return $stmt->execute(['id_khach_hang' => $id_khach_hang,'id_san_pham'=>$id_san_pham , 'noi_dung' => $noi_dung]);
-    }
-    
 }

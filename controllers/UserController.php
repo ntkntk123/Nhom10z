@@ -24,9 +24,15 @@ class UserController{
                 $_SESSION['trang_thai'] = $user['trang_thai'];
     
                 if ($user['trang_thai'] == 0) {
+                    if ($user['role'] == 1){
+                        {
+                            header("Location: ?act=admin");
+                        }
+                    }else{
+
                     header("Location: ?act=/");
                     exit(); 
-                } else {
+                }} else {
                     $err = "Tài khoản hoặc mật khẩu không chính xác.";
                 }
             } else {
@@ -49,6 +55,9 @@ class UserController{
         header("Location: ?act=/");
     }
 
+    public function formAddUser(){
+        require_once './admin/formAddUser.php';
+    }
     public function formRegister(){
         require_once './login/register.php';
     }
@@ -56,11 +65,12 @@ class UserController{
         if (isset($_POST['username'])) {
             $user = $_POST['username'];
             $ten_khach_hang=$_POST['ten_khach_hang'];
+            $phone=$_POST['phone'];
             $email = $_POST['email'];
             $pass=$_POST['password'];
             $pass2=$_POST['password2'];
       
-            if ($this->modelUser->postRegister($ten_khach_hang, $user,  $pass, $email, $pass2)) {
+            if ($this->modelUser->postRegister($ten_khach_hang, $user,  $pass,$phone, $email, $pass2)) {
                 header("Location: ./");
             }
         }
@@ -112,7 +122,7 @@ class UserController{
     
 
     public function admin(){
-        $admin=$this->modelUser->getAdmin();
+        $listUser = $this->modelUser->getAllUser();
         require_once './admin/admin.php';
         
        

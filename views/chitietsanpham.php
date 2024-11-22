@@ -4,18 +4,20 @@ session_start();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ</title>
+    <title>Chi tiết sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* .logo {
+        .logo {
             width: 40px;
             height: 40px;
             background-color: #e0e0e0;
             margin-right: 10px;
-        } */
+        }
+
         .slideshow-container {
             position: relative;
             max-width: 100%;
@@ -23,12 +25,15 @@ session_start();
             overflow: hidden;
             border-radius: 10px;
         }
+
         .slideshow-container img {
             width: 100%;
             height: 400px;
             object-fit: cover;
         }
-        .prev, .next {
+
+        .prev,
+        .next {
             cursor: pointer;
             position: absolute;
             top: 50%;
@@ -44,13 +49,17 @@ session_start();
             transition: 0.3s;
             z-index: 1000;
         }
+
         .prev {
             left: 10px;
         }
+
         .next {
             right: 10px;
         }
-        .prev:hover, .next:hover {
+
+        .prev:hover,
+        .next:hover {
             background-color: rgba(0, 0, 0, 0.8);
         }
 
@@ -58,21 +67,13 @@ session_start();
             background-color: #f1f1f1;
             padding: 20px;
         }
-
-        /* Custom CSS for the user dropdown */
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
-        .dropdown-menu {
-            display: none;
-        }
     </style>
 </head>
+
 <body>
 <header class="bg-white py-3 border-bottom">
     <div class="container d-flex justify-content-between align-items-center">
-        <div class="logo"> <img src="https://sharesrc.pro/tao-logo/dep/view.php?text=Nh%C3%B3m10&color=1" alt=""></div>
+        <div class="logo"></div>
         <nav class="d-flex gap-4">
             <a href="?act=/" class="text-decoration-none text-dark fw-bold">Trang chủ</a>
             <a href="?act=sanpham" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
@@ -122,43 +123,51 @@ session_start();
     </div>
 </header>
 
-    <div class="slideshow-container">
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=New+Arrivals" alt="Slide 1">
-        </div>
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=Big+Discounts" alt="Slide 2">
-        </div>
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=Summer+Collection" alt="Slide 3">
-        </div>
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-    </div>
-    <div class="container my-5">
-        <h2 class="text-center mb-4">Our Products</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <?php if (isset($listProducts) && !empty($listProducts)): ?>
-                <?php foreach($listProducts as $product): ?>
-                    <div class="col">
-                        <div class="card h-100">
-                            <img width="225px" height="225px" src="<?php echo htmlspecialchars($product['hinh_anh']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($product['ten_san_pham']); ?>">
-                            <div class="card-body">
-                                <h5 style="text-align:center;" class="card-title"><?php echo htmlspecialchars($product['ten_san_pham']); ?></h5>
-                                <p style="text-align:center;" class="card-text"><strong><?php echo number_format($product['gia'], 0, ',', '.') . " VND"; ?></strong></p>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <a style="font-size:15px" href="#" class="btn btn-outline-primary">Mua ngay</a>
-                                    <a style="font-size:15px" href="#" class="btn btn-outline-secondary">Thêm vào giỏ hàng</a>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Main -->
+
+    <div class="card mt-3 mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="<?php echo $sanpham['hinh_anh']; ?>" class="img-fluid rounded-start" alt="Product Image"
+                    style="width: 375px; height: 300px;">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">Chi tiết sản phẩm</h5>
+                    <h1 class="card-title">Tên sản phẩm: <?php echo $sanpham['ten_san_pham']; ?></h1>
+                    <p class="card-text">Giá: <?php echo $sanpham['gia']; ?></p>
+                    <p class="card-text">Mô tả sản phẩm: <?php echo $sanpham['mo_ta']; ?></p>
+                    <label for="">Số lượng:</label>
+                    <input type="number" value="1" class="form-control">
+                    <div class="d-flex align-items-center">
+                        <a href="product_detail.php?id=<?php echo $sanpham['id_san_pham']; ?>"
+                            class="btn btn-outline-primary">Mua ngay</a>
+                        <button onclick="addToCart(<?php echo $sanpham['id_san_pham']; ?>)"
+                            class="btn btn-outline-secondary ms-3">Thêm vào giỏ hàng</button>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Không có sản phẩm nào.</p>
-            <?php endif; ?>
+                </div>
+
+            </div>
         </div>
+        <?php
+        if (isset($sanpham['id_san_pham'])):
+        var_dump($sanpham['id_san_pham']) ?>
+            <form action="?act=binh-luan&id_san_pham=" method="POST">
+                <label for="binh_luan">Bình Luận</label>
+                <input type="text" name="binh_luan" class="form-control">
+                <button type="submit" class="btn btn-outline-primary">Gửi</button>
+            </form>
+        </div>
+    <?php endif
+        ?>
     </div>
+
+
+
+
+
+
+    <!--Footer-->
     <footer>
         <div class="container d-flex justify-content-between">
             <div class="footer-section">
@@ -198,4 +207,5 @@ session_start();
         }
     </script>
 </body>
+
 </html>

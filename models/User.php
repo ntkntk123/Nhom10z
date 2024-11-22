@@ -30,16 +30,22 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function postRegister($ten_khach_hang, $user, $pass, $email, $pass2)
+    public function postRegister($ten_khach_hang, $user, $pass, $phone, $email)
     {
         try {
-            $sql = 'INSERT INTO khach_hang ( ten_khach_hang, username,  password, email)
-                VALUES(:ten_khach_hang, :username, :password, :email)';
+            $sql = 'INSERT INTO khach_hang (ten_khach_hang, username, phone, password, email)
+                    VALUES(:ten_khach_hang, :username, :phone, :password, :email)';
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':ten_khach_hang' => $ten_khach_hang, ':username' => $user, ':email' => $email, ':password' => $pass]);
+            $stmt->execute([
+                ':ten_khach_hang' => $ten_khach_hang,
+                ':username' => $user,
+                ':phone' => $phone,
+                ':password' => $pass,
+                ':email' => $email
+            ]);
             return true;
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            return "Lỗi: " . $e->getMessage();
         }
     }
 
@@ -81,20 +87,7 @@ class User
         }
     }
 
-    public function getAdmin()
-    {
-        try {
-            $sql = 'SELECT * FROM khach_hang WHERE role=1';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetchAll();
-        } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
-        }
-    }
 
     
 }
-
-
 ?>

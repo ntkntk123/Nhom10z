@@ -7,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Men's Clothing Store</title>
+    <title>Sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .logo {
@@ -61,66 +61,67 @@ session_start();
     </style>
 </head>
 <body>
-    <header class="bg-white py-3 border-bottom">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="logo"></div>
-            <nav class="d-flex gap-4">
-                <a href="#" class="text-decoration-none text-dark fw-bold">Sale 50%</a>
-                <a href="#" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
-                <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
-                <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
-                <a href="?act=login" class="text-decoration-none text-dark fw-bold">Đăng nhập</a>
-                <?php if (isset($_SESSION['username'])) {
-            echo "Chào mừng, " . $_SESSION['username'] . "!";
-            echo ' <a href="?act=logout" class="text-decoration-none text-dark fw-bold">Đăng xuat</a>';
-            
-          } ?>
-         
-                <?php
+<header class="bg-white py-3 border-bottom">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="logo"></div>
+        <nav class="d-flex gap-4">
+            <a href="?act=/" class="text-decoration-none text-dark fw-bold">Trang chủ</a>
+            <a href="?act=sanpham" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
+            <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
+            <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
+        </nav>
+        <div class="d-flex gap-3">
+            <input type="text" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="width: 250px;">
+            <div class="d-flex gap-4 align-items-center">
+                <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                <?php if (isset($_SESSION['username'])): ?>
+                    <div class="dropdown">
+                        <span class="text-dark fw-bold dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Chào mừng, <?php echo $_SESSION['username']; ?>!
+                        </span>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="?act=profile">Thông tin khách hàng</a></li>
+                            <li><a class="dropdown-item" href="?act=lsu">Lịch sử mua hàng</a></li>
+                            <li><a class="dropdown-item" href="?act=cart">Giỏ hàng</a></li>
+                            <li><a class="dropdown-item" href="?act=change_password">Đổi mật khẩu</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="?act=logout">Đăng xuất</a></li>
+                        </ul>
+                    </div>
 
-if (isset($_SESSION['username'])) {
-  $role = $_SESSION['role'];
-  if ($role == 1) {
-    echo  ' <li class="nav-item">
-  <a  href="?act=admin">Quản lí admin</a>
-</li>';
- 
-
-}}
-?>
-            </nav>
-            <div class="d-flex gap-3">
-                <input type="text" placeholder="Tìm kiếm sản phẩm..." class="form-control" style="width: 250px;">
-                <div class="d-flex gap-2">
-                    <div class="cart-icon bg-secondary rounded-circle" style="width: 24px; height: 24px;"></div>
-                    <div class="user-icon bg-secondary rounded-circle" style="width: 24px; height: 24px;"></div>
-                </div>
+                    <!-- Kiểm tra quyền admin -->
+                    <?php if ($_SESSION['role'] == 1): ?>
+                        <li class="nav-item">
+                            <a href="?act=admin" class="text-decoration-none text-dark fw-bold">Quản lý admin</a>
+                        </li>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <!-- Nếu chưa đăng nhập, hiển thị Đăng nhập và Đăng ký -->
+                    <a href="?act=login" class="text-decoration-none text-dark text-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeUUz1pW3PpdJVcOvcwfYWdKFK4wBGL_UvcA&s" alt="User Icon" class="user-icon bg-secondary rounded-circle" style="width: 40px; height: 40px;">
+                        <br>
+                        <small>Đăng nhập</small>
+                    </a>
+                    <a href="?act=formRegister" class="text-decoration-none text-dark text-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeUUz1pW3PpdJVcOvcwfYWdKFK4wBGL_UvcA&s" alt="User Icon" class="user-icon bg-secondary rounded-circle" style="width: 40px; height: 40px;">
+                        <br>
+                        <small>Đăng ký</small>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
-    </header>
-    <div class="slideshow-container">
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=New+Arrivals" alt="Slide 1">
-        </div>
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=Big+Discounts" alt="Slide 2">
-        </div>
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=Summer+Collection" alt="Slide 3">
-        </div>
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
     </div>
+</header>
     <?php if (!empty($danhmucs)): ?>
         <?php foreach ($danhmucs as $danhmuc): ?>
             <h2><?php echo htmlspecialchars($danhmuc['ten_danh_muc']); ?></h2> <!-- Hiển thị tên danh mục -->
-            <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
                 <?php if (!empty($sanPhamDanhMuc[$danhmuc['id_danh_muc']])): ?>
                     <?php foreach ($sanPhamDanhMuc[$danhmuc['id_danh_muc']] as $sanpham): ?>
                         <div class="col">
                             <div class="card h-100">
                                 <a href="./?act=chitietsanpham&id_san_pham=<?php echo $sanpham['id_san_pham']; ?>">
-                                    <img src="<?php echo htmlspecialchars($sanpham['hinh_anh']); ?>" class="card-img-top"
+                                    <img style="width:375px; height:250px" src="<?php echo htmlspecialchars($sanpham['hinh_anh']); ?>" 
                                         alt="<?php echo htmlspecialchars($sanpham['ten_san_pham']); ?>">
                                 </a>
                                 <div class="card-body">
