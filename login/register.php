@@ -200,20 +200,15 @@
     <div class="register-form">
         <h2>Đăng Ký</h2>
         <form action="./?act=register" method="POST">
-            <input type="text" name="username" id="username" placeholder="Tên tài khoản" required>
+    <input type="text" name="username" id="username" placeholder="Tên tài khoản" required>
+    <input type="text" name="ten_khach_hang" id="ten_khach_hang" placeholder="Tên khách hàng" required>
+    <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
+    <input type="password" name="password2" id="password2" placeholder="Xác nhận mật khẩu" required>
+    <input type="email" name="email" id="email" placeholder="Email" required>
+    <input type="number" name="phone" id="phone" placeholder="Số điện thoại" required>
+    <button type="submit">Đăng ký</button>
+</form>
 
-            <input type="text" name="ten_khach_hang" id="ten_khach_hang" placeholder="Tên khách hàng" required>
-
-            <input type="email" name="email" id="email" placeholder="Email" required>
-            
-            <input type="number" name="phone" id="phone" placeholder="Phone" required>
-
-            <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
-
-            <input type="password" name="password2" id="password2" placeholder="Xác nhận mật khẩu" required>
-
-            <button type="submit">Đăng Ký</button>
-        </form>
         <p>Đã có tài khoản? <a href="?act=login">Đăng nhập ngay</a></p>
     </div>
 

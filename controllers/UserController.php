@@ -7,39 +7,47 @@ class UserController{
     }
 
     public function login() {
-       $err="";
+        $err = ""; 
+    
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $username = $_POST['username'];
-            $password = $_POST['password'];
+            $username = $_POST['username'] ; 
+            $password = $_POST['password'] ;
+    
             
             $user = $this->modelUser->login($username, $password);
-
+    
             if ($user) {
-                session_start();
+                    session_start();
                 $_SESSION['username'] = $username;
                 $_SESSION['password'] = $password;
                 $_SESSION['role'] = $user['role'];
-                
-                header("Location: ?act=/");
-                
+                $_SESSION['trang_thai'] = $user['trang_thai'];
+    
+                if ($user['trang_thai'] == 0) {
+                    if ($user['role'] == 1){
+                        {
+                            header("Location: ?act=admin");
+                        }
+                    }else{
 
-                // if($user['role']==1){
-                //     header("Location: ?act=form-add-user");
-                // }
-            } 
-            
-            else {
-                //  echo ("Tên đăng nhập hoặc mật khẩu không đúng!") . "tai khoan:".$username. "mat khau".$password;
-                 $err="Tài khoản hoặc mật khẩu không chính xác.";
-                 require './login/login.php';
+                    header("Location: ?act=/");
+                    exit(); 
+                }} else {
+                    $err = "Tài khoản hoặc mật khẩu không chính xác.";
+                }
+            } else {
+                $err = "Tài khoản hoặc mật khẩu không chính xác.";
             }
-        } else {
-
-                require './login/login.php';
         }
+    
+        
+        require './login/login.php';
     }
+    
     public function logout(){
         session_start();
+        session_unset();
+        session_destroy();
         unset($_SESSION['username'] );
         unset( $_SESSION['password']);
         unset( $_SESSION['role']);
@@ -47,6 +55,9 @@ class UserController{
         header("Location: ?act=/");
     }
 
+    public function formAddUser(){
+        require_once './admin/formAddUser.php';
+    }
     public function formRegister(){
         require_once './login/register.php';
     }
@@ -64,9 +75,58 @@ class UserController{
             }
         }
     }
-}
+
+    //hiển thị danh sách user để quản lí 
+    public function listUser(){
+        $listUser = $this->modelUser->getAllUser();
+        require_once './admin/quanliuser.php';
+    }
 
     
+    public function formUpdateUser(){
+        $id = $_GET['id_khach_hang'];
+        $user = $this->modelUser->getUserId($id);
+        // var_dump($user);die();
+        require_once './admin/formUpdateUser.php';
+    }
 
-   
+    //sửa 
+    public function postUpdateUser(){
+        if (isset($_POST['id_khach_hang'])) {
+            $id = $_POST['id_khach_hang'];
+            $ten_khach_hang=$_POST['ten_khach_hang'];
+            $user = $_POST['username'];
+            $pass = $_POST['password'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $trang_thai=$_POST['trang_thai'];
+            $role = $_POST['role'];
+ 
+            
+
+           
+            
+            if ($this->modelUser->postUpdateUser($id, $ten_khach_hang, $user, $pass,$email, $phone, $trang_thai, $role)) {
+                header("Location: ./");
+            }
+        }
+    }
+
+    public function deleteUser(){
+        $id = $_GET['id_khach_hang'];
+        if ($this->modelUser->deleteUser($id)) {
+            header("Location: ./");
+            
+        }
+    }
+    
+
+    public function admin(){
+        $listUser = $this->modelUser->getAllUser();
+        require_once './admin/admin.php';
+        
+       
+    
+}
+}
 ?>

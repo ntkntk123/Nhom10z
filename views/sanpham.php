@@ -7,15 +7,15 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ</title>
+    <title>Sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* .logo {
+        .logo {
             width: 40px;
             height: 40px;
             background-color: #e0e0e0;
             margin-right: 10px;
-        } */
+        }
         .slideshow-container {
             position: relative;
             max-width: 100%;
@@ -58,21 +58,12 @@ session_start();
             background-color: #f1f1f1;
             padding: 20px;
         }
-
-        /* Custom CSS for the user dropdown */
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-
-        .dropdown-menu {
-            display: none;
-        }
     </style>
 </head>
 <body>
 <header class="bg-white py-3 border-bottom">
     <div class="container d-flex justify-content-between align-items-center">
-        <div class="logo"> <img src="https://sharesrc.pro/tao-logo/dep/view.php?text=Nh%C3%B3m10&color=1" alt=""></div>
+        <div class="logo"></div>
         <nav class="d-flex gap-4">
             <a href="?act=/" class="text-decoration-none text-dark fw-bold">Trang chủ</a>
             <a href="?act=sanpham" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
@@ -121,44 +112,41 @@ session_start();
         </div>
     </div>
 </header>
-
-    <div class="slideshow-container">
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=New+Arrivals" alt="Slide 1">
-        </div>
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=Big+Discounts" alt="Slide 2">
-        </div>
-        <div class="slides">
-            <img src="https://via.placeholder.com/800x400?text=Summer+Collection" alt="Slide 3">
-        </div>
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-    </div>
-    <div class="container my-5">
-        <h2 class="text-center mb-4">Our Products</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <?php if (isset($listProducts) && !empty($listProducts)): ?>
-                <?php foreach($listProducts as $product): ?>
-                    <div class="col">
-                        <div class="card h-100">
-                            <img width="225px" height="225px" src="<?php echo htmlspecialchars($product['hinh_anh']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($product['ten_san_pham']); ?>">
-                            <div class="card-body">
-                                <h5 style="text-align:center;" class="card-title"><?php echo htmlspecialchars($product['ten_san_pham']); ?></h5>
-                                <p style="text-align:center;" class="card-text"><strong><?php echo number_format($product['gia'], 0, ',', '.') . " VND"; ?></strong></p>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <a style="font-size:15px" href="#" class="btn btn-outline-primary">Mua ngay</a>
-                                    <a style="font-size:15px" href="#" class="btn btn-outline-secondary">Thêm vào giỏ hàng</a>
+    <?php if (!empty($danhmucs)): ?>
+        <?php foreach ($danhmucs as $danhmuc): ?>
+            <h2><?php echo htmlspecialchars($danhmuc['ten_danh_muc']); ?></h2> <!-- Hiển thị tên danh mục -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+                <?php if (!empty($sanPhamDanhMuc[$danhmuc['id_danh_muc']])): ?>
+                    <?php foreach ($sanPhamDanhMuc[$danhmuc['id_danh_muc']] as $sanpham): ?>
+                        <div class="col">
+                            <div class="card h-100">
+                                <a href="./?act=chitietsanpham&id_san_pham=<?php echo $sanpham['id_san_pham']; ?>">
+                                    <img style="width:375px; height:250px" src="<?php echo htmlspecialchars($sanpham['hinh_anh']); ?>" 
+                                        alt="<?php echo htmlspecialchars($sanpham['ten_san_pham']); ?>">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($sanpham['ten_san_pham']); ?></h5>
+                                    <p class="card-text">Giá: <strong><?php echo number_format($sanpham['gia'], 0, ',', '.'); ?>
+                                            VND</strong></p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="./?act=chitietsanpham&id_san_pham=<?php echo $sanpham['id_san_pham']; ?>"
+                                            class="btn btn-primary">Mua ngay</a>
+                                        <button onclick="addToCart(<?php echo $sanpham['id_san_pham']; ?>)"
+                                            class="btn btn-secondary">Thêm vào giỏ hàng</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Không có sản phẩm nào.</p>
-            <?php endif; ?>
-        </div>
-    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Không có sản phẩm nào trong danh mục này.</p>
+                <?php endif; ?>
+            </div>
+
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Không có danh mục nào.</p>
+    <?php endif; ?>
     <footer>
         <div class="container d-flex justify-content-between">
             <div class="footer-section">
