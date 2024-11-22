@@ -66,7 +66,7 @@ session_start();
             <div class="logo"></div>
             <nav class="d-flex gap-4">
                 <a href="#" class="text-decoration-none text-dark fw-bold">Sale 50%</a>
-                <a href="?act=sanpham" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
+                <a href="#" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
                 <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
                 <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
                 <a href="?act=login" class="text-decoration-none text-dark fw-bold">Đăng nhập</a>
@@ -111,28 +111,41 @@ if (isset($_SESSION['username'])) {
         <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
         <a class="next" onclick="plusSlides(1)">&#10095;</a>
     </div>
-    <div class="container my-5">
-        <h2 class="text-center mb-4">Our Products</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <?php if (isset($listProducts) && !empty($listProducts)): ?>
-                <?php foreach($listProducts as $product): ?>
-                    <div class="col">
-                        <div class="card h-100">
-                            <img width="225px" height="225px" src="<?php echo htmlspecialchars($product['hinh_anh']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($product['ten_san_pham']); ?>">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($product['ten_san_pham']); ?></h5>
-                                <p class="card-text"><strong><?php echo number_format($product['gia'], 0, ',', '.') . " VND"; ?></strong></p>
-                                <a href="#" class="btn btn-outline-primary">Mua ngay</a>
-                                <a href="#" class="btn btn-outline-secondary">Thêm vào giỏ hàng</a>
+    <?php if (!empty($danhmucs)): ?>
+        <?php foreach ($danhmucs as $danhmuc): ?>
+            <h2><?php echo htmlspecialchars($danhmuc['ten_danh_muc']); ?></h2> <!-- Hiển thị tên danh mục -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <?php if (!empty($sanPhamDanhMuc[$danhmuc['id_danh_muc']])): ?>
+                    <?php foreach ($sanPhamDanhMuc[$danhmuc['id_danh_muc']] as $sanpham): ?>
+                        <div class="col">
+                            <div class="card h-100">
+                                <a href="./?act=chitietsanpham&id_san_pham=<?php echo $sanpham['id_san_pham']; ?>">
+                                    <img src="<?php echo htmlspecialchars($sanpham['hinh_anh']); ?>" class="card-img-top"
+                                        alt="<?php echo htmlspecialchars($sanpham['ten_san_pham']); ?>">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($sanpham['ten_san_pham']); ?></h5>
+                                    <p class="card-text">Giá: <strong><?php echo number_format($sanpham['gia'], 0, ',', '.'); ?>
+                                            VND</strong></p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="./?act=chitietsanpham&id_san_pham=<?php echo $sanpham['id_san_pham']; ?>"
+                                            class="btn btn-primary">Mua ngay</a>
+                                        <button onclick="addToCart(<?php echo $sanpham['id_san_pham']; ?>)"
+                                            class="btn btn-secondary">Thêm vào giỏ hàng</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Không có sản phẩm nào.</p>
-            <?php endif; ?>
-        </div>
-    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Không có sản phẩm nào trong danh mục này.</p>
+                <?php endif; ?>
+            </div>
+
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Không có danh mục nào.</p>
+    <?php endif; ?>
     <footer>
         <div class="container d-flex justify-content-between">
             <div class="footer-section">
