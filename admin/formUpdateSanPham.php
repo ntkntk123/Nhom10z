@@ -1,4 +1,6 @@
-
+<?php
+// session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm sản phẩm</title>
+    <title>Sửa sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .logo {
@@ -150,73 +152,49 @@
                 </div>
             </div>
             <div class="col-8">
-                <h1>Thêm Sản Phẩm</h1>
-                <form action="./?act=post-add-sanpham" method="post" enctype="multipart/form-data">
-                    
-                    <label for="ma_san_pham">Mã sản phẩm</label>
-                    <input type="text" placeholder="Nhập mã sản phẩm" name="ma_san_pham" class="form-control" >
-                    <?php if (isset($_SESSION['err']['ma_san_pham'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['ma_san_pham'] ?></p>
-                    <?php } ?>
+            <h1>Sửa Sản Phẩm</h1>
+<form action="./?act=postUpdateSanPham" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id_san_pham" value="<?php echo $product['id_san_pham']; ?>">
+    <input type="hidden" name="old_hinh_anh" value="<?php echo $product['hinh_anh']; ?>">
 
-                    
-                    <label for="ten_san_pham">Tên sản phẩm</label>
-                    <input type="text" placeholder="Nhập tên sản phẩm" name="ten_san_pham" class="form-control"
-                        >
-                        <?php if (isset($_SESSION['err']['ten_san_pham'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['ten_san_pham'] ?></p>
-                    <?php } ?>
+    <label for="ma_san_pham">Mã sản phẩm</label>
+    <input type="text" name="ma_san_pham" value="<?php echo htmlspecialchars($product['ma_san_pham']); ?>" class="form-control">
 
-                    
-                    <label for="gia">Giá</label>
-                    <input type="number" placeholder="Nhập giá sản phẩm" name="gia" class="form-control" >
-                    <?php if (isset($_SESSION['err']['gia'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['gia'] ?></p>
-                    <?php } ?>
-                    
-                    <label for="so_luong">Số lượng</label>
-                    <input type="number" name="so_luong" value="0" class="form-control" >
-                    <?php if (isset($_SESSION['err']['so_luong'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['so_luong'] ?></p>
-                    <?php } ?>
-                    
-                    <label for="id_danh_muc">Danh mục</label>
-                    <select name="id_danh_muc" class="form-control" >
-                        <option value="" >-- Lựa chọn --</option>
-                        <?php foreach ($danhmucs as $danhmuc): ?>
-                            <option value="<?= $danhmuc['id_danh_muc'] ?>"><?php echo $danhmuc['ten_danh_muc'] ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <?php if (isset($_SESSION['err']['id_danh_muc'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['id_danh_muc'] ?></p>
-                    <?php } ?>
+    <label for="ten_san_pham">Tên sản phẩm</label>
+    <input type="text" name="ten_san_pham" value="<?php echo htmlspecialchars($product['ten_san_pham']); ?>" class="form-control">
 
-                   
-                    <label for="mo_ta">Mô tả</label>
-                    <textarea name="mo_ta" placeholder="Nhập mô tả" class="form-control"></textarea>
+    <label for="gia">Giá</label>
+    <input type="number" name="gia" value="<?php echo $product['gia']; ?>" class="form-control">
 
-                    
-                    <label for="trang_thai">Trạng thái</label>
-                    <select name="trang_thai" class="form-control" >
-                        <option value="">-- Lựa chọn --</option>
-                        <option value="0">Còn hàng</option>
-                        <option value="1">Hết hàng</option>
-                    </select>
-                    <?php if (isset($_SESSION['err']['trang_thai'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['trang_thai'] ?></p>
-                    <?php } ?>
+    <label for="so_luong">Số lượng</label>
+    <input type="number" name="so_luong" value="<?php echo $product['so_luong']; ?>" class="form-control">
 
-                    
-                    <label for="hinh_anh">Hình ảnh</label>
-                    <input type="file" name="hinh_anh" class="form-control">
-                    <br>
+    <label for="id_danh_muc">Danh mục</label>
+    <select name="id_danh_muc" class="form-control">
+        <option value="">-- Lựa chọn --</option>
+        <?php foreach ($danhmucs as $danhmuc): ?>
+            <option value="<?= $danhmuc['id_danh_muc'] ?>" <?= $product['id_danh_muc'] == $danhmuc['id_danh_muc'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($danhmuc['ten_danh_muc']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
-                    <label for="">Album ảnh</label>
-                    <input type="file" name="img_array[]" class="form-control" multipart>
+    <label for="mo_ta">Mô tả</label>
+    <textarea name="mo_ta" class="form-control"><?php echo htmlspecialchars($product['mo_ta']); ?></textarea>
 
-                    
-                    <center><button type="submit" class="btn btn-success">Thêm sản phẩm</button></center>
-                </form>
+    <label for="trang_thai">Trạng thái</label>
+    <select name="trang_thai" class="form-control">
+        <option value="0" <?= $product['trang_thai'] == 0 ? 'selected' : '' ?>>Còn hàng</option>
+        <option value="1" <?= $product['trang_thai'] == 1 ? 'selected' : '' ?>>Hết hàng</option>
+    </select>
+
+    <label for="hinh_anh">Hình ảnh</label>
+    <img src="<?php echo $product['hinh_anh']; ?>" alt="" width="100">
+    <input type="file" name="hinh_anh" class="form-control">
+
+    <center><button type="submit" class="btn btn-success">Sửa sản phẩm</button></center>
+</form>
+
             </div>
         </div>
     </div>

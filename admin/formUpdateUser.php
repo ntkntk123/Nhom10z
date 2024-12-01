@@ -134,7 +134,7 @@ session_start();
     <div class="container-fluid mt-3">
         <div class="row">
 
-            <div class="col-4">
+            <div class="col-2">
 
                 <div class="list-group">
                     <a href="?act=admin" class="list-group-item list-group-item-action list-group-item-info">Quản
@@ -151,25 +151,25 @@ session_start();
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-10">
                 <h1>Cập nhật thông tin khách hàng</h1>
                 <form action="./?act=updateUser" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id_khach_hang" value="<?php echo $user['id_khach_hang'] ?>">
 
                     <label for="ten_khach_hang">Tên khách hàng</label><br>
-                    <input type="text" class="form-control" value="<?php echo $user['ten_khach_hang'] ?>" name="ten_khach_hang"><br>
+                    <input type="text" class="form-control" disabled value="<?php echo $user['ten_khach_hang'] ?>" name="ten_khach_hang"><br>
 
                     <label for="username">Username</label><br>
-                    <input type="text" class="form-control" value="<?php echo $user['username'] ?>" name="username"><br>
+                    <input type="text" class="form-control" disabled value="<?php echo $user['username'] ?>" name="username"><br>
 
                     <label for="password">Password</label><br>
-                    <input type="password" class="form-control" value="<?php echo $user['password'] ?>" name="password"><br>
+                    <input type="password" class="form-control" disabled value="<?php echo $user['password'] ?>" name="password"><br>
 
                     <label for="phone">Số điện thoại</label><br>
-                    <input type="text" class="form-control" value="<?php echo $user['phone'] ?>" name="phone"><br>
+                    <input type="text" class="form-control" disabled value="<?php echo $user['phone'] ?>" name="phone"><br>
 
                     <label for="email">Email</label><br>
-                    <input type="email" class="form-control" value="<?php echo $user['email'] ?>" name="email"><br>
+                    <input type="email" class="form-control" disabled value="<?php echo $user['email'] ?>" name="email"><br>
 
                     <label for="trang_thai">Trạng thái</label><br>
                     <select name="trang_thai" class="form-control" id="trang_thai">

@@ -21,6 +21,7 @@ class UserController{
                 $_SESSION['username'] = $username;
                 $_SESSION['password'] = $password;
                 $_SESSION['role'] = $user['role'];
+                $_SESSION['id_khach_hang'] = $user['id_khach_hang'];
                 $_SESSION['trang_thai'] = $user['trang_thai'];
     
                 if ($user['trang_thai'] == 0) {
@@ -39,8 +40,6 @@ class UserController{
                 $err = "Tài khoản hoặc mật khẩu không chính xác.";
             }
         }
-    
-        
         require './login/login.php';
     }
     

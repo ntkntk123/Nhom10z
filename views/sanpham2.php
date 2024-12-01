@@ -77,7 +77,7 @@
         <nav class="d-flex gap-4">
             <a href="?act=/" class="text-decoration-none text-dark fw-bold">Trang chủ</a>
             <a href="?act=sanpham" class="text-decoration-none text-dark fw-bold">Sản Phẩm</a>
-            <a href="?act=lienhe" class="text-decoration-none text-dark fw-bold">Liên hệ</a>
+            <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Lót</a>
             <a href="#" class="text-decoration-none text-dark fw-bold">Đồ Mặc Hàng Ngày</a>
         </nav>
         <div class="d-flex gap-3">

@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 ?>
 
 <!DOCTYPE html>
@@ -134,7 +134,7 @@ session_start();
     <div class="container-fluid mt-3">
         <div class="row">
 
-            <div class="col-4">
+            <div class="col-2">
 
                 <div class="list-group">
                     <a href="?act=admin" class="list-group-item list-group-item-action list-group-item-info">Quản lí khách hàng</a>
@@ -147,7 +147,7 @@ session_start();
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-10">
                 <h1>Quản lí user</h1>
                 <a href="./?act=formAddUser"><button class="btn btn-success">Thêm user</button></a>
                 <table class="table table-striped table-bordered mt-3" border=1>

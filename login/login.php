@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 ?>
 
 <!DOCTYPE html>
@@ -96,7 +96,7 @@ session_start();
     <p>Chưa có tài khoản? <a href="?act=formRegister">Đăng ký ngay</a></p>
 </div>
 </body>
-<!-- 
+
 <script>
     function validateForm() {
         var username = document.getElementById("username").value;
@@ -113,6 +113,6 @@ session_start();
         }
         return true;
     }
-</script> -->
+</script>
 
 </html>
