@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 ?>
 
 <!DOCTYPE html>
@@ -131,8 +131,17 @@ session_start();
                                     <div class="d-flex justify-content-between">
                                         <a href="./?act=chitietsanpham&id_san_pham=<?php echo $sanpham['id_san_pham']; ?>"
                                             class="btn btn-primary">Mua ngay</a>
-                                        <button onclick="addToCart(<?php echo $sanpham['id_san_pham']; ?>)"
-                                            class="btn btn-secondary">Thêm vào giỏ hàng</button>
+                                        <!-- <button onclick="addToCart(<?php echo $sanpham['id_san_pham']; ?>)"
+                                            class="btn btn-secondary">Thêm vào giỏ hàng</button> -->
+                                            <form action="index.php?act=addtoCart" method="post">
+    <input type="hidden" name="product_id" value="<?= $sanpham['id_san_pham']; ?>">
+    <input type="hidden" name="product_name" value="<?= htmlspecialchars($sanpham['ten_san_pham']); ?>">
+    <input type="hidden" name="product_image" value="<?= htmlspecialchars($sanpham['hinh_anh']); ?>">
+    <input type="hidden" name="product_price" value="<?= $sanpham['gia']; ?>">
+
+    <input type="submit" name="addtoCart" value="Thêm vào giỏ hàng" class="btn btn-success">
+</form>
+
                                     </div>
                                 </div>
                             </div>

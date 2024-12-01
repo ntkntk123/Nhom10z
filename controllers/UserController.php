@@ -17,7 +17,10 @@ class UserController{
             $user = $this->modelUser->login($username, $password);
     
             if ($user) {
-                    session_start();
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start(); // Chỉ gọi session_start() nếu phiên chưa bắt đầu
+                }
+            
                 $_SESSION['username'] = $username;
                 $_SESSION['password'] = $password;
                 $_SESSION['role'] = $user['role'];
