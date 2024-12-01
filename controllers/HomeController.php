@@ -20,10 +20,7 @@ class HomeController
         $listProducts = $this->modelProducts->getAllProducts();
         require_once './views/lsu.php';
     }
-    public function cart(){
-        $listProducts = $this->modelProducts->getAllProducts();
-        require_once './views/giohang.php';
-    }
+    
     public function hienThi() {
         $danhmucs = $this->modelProducts->getDanhMuc();     
         if (empty($danhmucs)) {
@@ -75,6 +72,7 @@ class HomeController
     }
     
 
+   
     
 
 
