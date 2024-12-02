@@ -42,6 +42,9 @@ match ($act) {
     'deleteUser'=>(new UserController())->deleteUser(),
     'admin'=>(new UserController())->admin(),
 
+    //phần đơn hàng
+    'quan-li-don-hang'=>(new Donhangcontroller())->listDonhang(),
+
 
     // 'quan-li-danh-muc'=>(new danhmucController())->danhmuc(),
     // 'form-add-danh-muc'=>(new danhmucController())->formDanhMuc(),

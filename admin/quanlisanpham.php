@@ -143,6 +143,7 @@ session_start();
                     <a href="?act=quanlisanpham"
                         class="list-group-item list-group-item-action list-group-item-info">Quản lí sản phẩm</a>
                     <a href="" class="list-group-item list-group-item-action list-group-item-info">Quản lí bình luận</a>
+                    <a href="?act=quan-li-don-hang" class="list-group-item list-group-item-action list-group-item-info">Quản lí đơn hàng</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Quản lí</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>

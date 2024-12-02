@@ -149,45 +149,35 @@ session_start();
                 </div>
             </div>
             <div class="col-8">
-                <h1>Quản lí user</h1>
-                <a href="./?act=formAddUser"><button class="btn btn-success">Thêm user</button></a>
+                <h1>Quản lí đơn hàng</h1>
+                <a href="./?act=formAddUser"><button class="btn btn-success">Thêm đơn hàng</button></a>
                 <table class="table table-striped table-bordered mt-3" border=1>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Tên Khách hàng</th>
-                            <th>Username</th>
-                            <th>Password</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <!-- <th>Trạng thái</th> -->
-                            <th>Quyền Admin</th>
+                            <th>ID đơn hàng</th>
+                            <th>ID khách hàng</th>
+                            <th>Ngày đặt hàng</th>
+                            <th>Tổng giá</th>
+                            <th>Trạng thái</th>
+                            <th>Địa chỉ giao hàng</th>     
                             <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($listUser as $key => $user): ?>
+                        <?php foreach ($listDonhang as $key => $donhang): ?>
                             <tr>
-                                <td><?php echo $user['id_khach_hang']; ?></td>
-                                <td><?php echo $user['ten_khach_hang']; ?></td>
-                                <td><?php echo $user['username']; ?></td>
-                                <td><?php echo $user['password']; ?></td>
-                                <td><?php echo $user['email']; ?></td>
-                                <td><?php echo $user['phone']; ?></td>
-                                <!-- <td><?php if ($user['trang_thai'] == 1) {
+                                <td><?php echo $donhang['id_don_hang']; ?></td>
+                                <td><?php echo $donhang['id_nguoi_dung']; ?></td>
+                                <td><?php echo $donhang['ngay_dat_hang']; ?></td>
+                                <td><?php echo $donhang['tong_gia']; ?></td>
+                                <td><?php if ($donhang['trang_thai'] == 1) {
                                     echo " Ẩn";
                                 } else {
                                     echo "Hiện";
                                 }
-
-                                ?></td> -->
-                                <td><?php if ($user['role'] == 1) {
-                                    echo " Có";
-                                } else {
-                                    echo "Không";
-                                }
-
-                                ?></td>
+                                ?>
+                                </td>
+                                <td><?php echo $donhang['dia_chi_giao_hang']; ?></td>
 
                                 <td>
                                     <a href="./?act=formUpdateUser&id_khach_hang=<?php echo $user['id_khach_hang']; ?>">
