@@ -1,5 +1,9 @@
 <?php
 // session_start();
+var_dump($product['trang_thai']);
+if($_SESSION['role']!=1){
+    header("location: ./");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -157,8 +161,7 @@
     <input type="hidden" name="id_san_pham" value="<?php echo $product['id_san_pham']; ?>">
     <input type="hidden" name="old_hinh_anh" value="<?php echo $product['hinh_anh']; ?>">
 
-    <label for="ma_san_pham">Mã sản phẩm</label>
-    <input type="text" name="ma_san_pham" value="<?php echo htmlspecialchars($product['ma_san_pham']); ?>" class="form-control">
+    
 
     <label for="ten_san_pham">Tên sản phẩm</label>
     <input type="text" name="ten_san_pham" value="<?php echo htmlspecialchars($product['ten_san_pham']); ?>" class="form-control">
@@ -171,7 +174,7 @@
 
     <label for="id_danh_muc">Danh mục</label>
     <select name="id_danh_muc" class="form-control">
-        <option value="">-- Lựa chọn --</option>
+        <option selected disabled>-- Lựa chọn --</option>
         <?php foreach ($danhmucs as $danhmuc): ?>
             <option value="<?= $danhmuc['id_danh_muc'] ?>" <?= $product['id_danh_muc'] == $danhmuc['id_danh_muc'] ? 'selected' : '' ?>>
                 <?= htmlspecialchars($danhmuc['ten_danh_muc']) ?>
@@ -184,8 +187,8 @@
 
     <label for="trang_thai">Trạng thái</label>
     <select name="trang_thai" class="form-control">
-        <option value="0" <?= $product['trang_thai'] == 0 ? 'selected' : '' ?>>Còn hàng</option>
-        <option value="1" <?= $product['trang_thai'] == 1 ? 'selected' : '' ?>>Hết hàng</option>
+        <option value="1" <?= $product['trang_thai'] == 1 ? 'selected' : '' ?>>Đang bán</option>
+        <option value="2" <?= $product['trang_thai'] == 2 ? 'selected' : '' ?>>Ngừng bán</option>
     </select>
 
     <label for="hinh_anh">Hình ảnh</label>

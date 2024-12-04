@@ -7,6 +7,8 @@ require_once './commonsz/function.php'; // Hàm hỗ trợ
 // Require toàn bộ file Controllers
 require_once './controllers/HomeController.php';
 require_once './controllers/UserController.php';
+require_once './controllers/CartController.php';
+require_once './controllers/Donhangcontroller.php';
 // require_once './controllers/danhmucController.php';
 // require_once './controllers/BinhluanController.php';
 
@@ -14,6 +16,7 @@ require_once './controllers/UserController.php';
 // Require toàn bộ file Models
 require_once './models/Student.php';
 require_once './models/User.php';
+require_once './models/Donhang.php';
 // require_once './models/danhmuc.php';
 // require_once './models/binhLuan.php';
 
@@ -24,7 +27,6 @@ $act = $_GET['act'] ?? '/';
 match ($act) {
     '/' => (new HomeController())->sanpham(),
     'profile' => (new HomeController())->profile(),
-    'cart' => (new HomeController())->cart(),
     'lsu' => (new HomeController())->lsu(),
     'login'=>(new UserController())->login(),
     'logout'=>(new UserController())->logout(),
@@ -33,7 +35,7 @@ match ($act) {
     'formRegister'=>(new UserController())->formRegister(),
     'chitietsanpham'=>(new HomeController())->chitietsanpham(),
     'sanpham'=>(new HomeController())->hienThi(),
-    'sanpham2'=>(new HomeController())->trangsanpham(),
+    'sanpham'=>(new HomeController())->trangsanpham(),
 
     //phần user
     'quan-li-user'=>(new UserController())->listUser(),
@@ -61,4 +63,13 @@ match ($act) {
     // 'chitietsanpham'=>(new BinhluanController())->showComments(),
 
     'binhluan'=>(new HomeController())->addBinhLuan(),
+    'quanlibinhluan'=>(new HomeController())->quanlibinhluan(),
+    'getbinhluansanpham'=>(new HomeController())->binhLuanTheoSanPham(),
+    'deleteBinhLuan'=>(new HomeController())->xoaBinhLuan(),
+
+       'addtoCart' => (new CartController())->addToCart(),
+    'updateCart' => (new CartController())->updateCart(),
+    'dellcart' => (new CartController())->deleteCart(),
+    'clearCart' => (new CartController())->clearCart(),
+    'cart' => (new CartController())->viewCart(),
 };

@@ -1,4 +1,8 @@
-
+<?php 
+if($_SESSION['role']!=1){
+    header("location: ./");
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -153,31 +157,26 @@
                 <h1>Thêm Sản Phẩm</h1>
                 <form action="./?act=post-add-sanpham" method="post" enctype="multipart/form-data">
                     
-                    <label for="ma_san_pham">Mã sản phẩm</label>
-                    <input type="text" placeholder="Nhập mã sản phẩm" name="ma_san_pham" class="form-control" >
-                    <?php if (isset($_SESSION['err']['ma_san_pham'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['ma_san_pham'] ?></p>
-                    <?php } ?>
-
+                  
                     
                     <label for="ten_san_pham">Tên sản phẩm</label>
                     <input type="text" placeholder="Nhập tên sản phẩm" name="ten_san_pham" class="form-control"
                         >
-                        <?php if (isset($_SESSION['err']['ten_san_pham'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['ten_san_pham'] ?></p>
+                        <?php if (isset($err['ten_san_pham'])) { ?>
+                        <p class="text-danger"><?= $err['ten_san_pham'] ?></p>
                     <?php } ?>
 
                     
                     <label for="gia">Giá</label>
                     <input type="number" placeholder="Nhập giá sản phẩm" name="gia" class="form-control" >
-                    <?php if (isset($_SESSION['err']['gia'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['gia'] ?></p>
+                    <?php if (isset($err['gia'])) { ?>
+                        <p class="text-danger"><?= $err['gia'] ?></p>
                     <?php } ?>
                     
                     <label for="so_luong">Số lượng</label>
                     <input type="number" name="so_luong" value="0" class="form-control" >
-                    <?php if (isset($_SESSION['err']['so_luong'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['so_luong'] ?></p>
+                    <?php if (isset($err['so_luong'])) { ?>
+                        <p class="text-danger"><?= $err['so_luong'] ?></p>
                     <?php } ?>
                     
                     <label for="id_danh_muc">Danh mục</label>
@@ -187,8 +186,8 @@
                             <option value="<?= $danhmuc['id_danh_muc'] ?>"><?php echo $danhmuc['ten_danh_muc'] ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (isset($_SESSION['err']['id_danh_muc'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['id_danh_muc'] ?></p>
+                    <?php if (isset($err['id_danh_muc'])) { ?>
+                        <p class="text-danger"><?= $err['id_danh_muc'] ?></p>
                     <?php } ?>
 
                    
@@ -198,12 +197,12 @@
                     
                     <label for="trang_thai">Trạng thái</label>
                     <select name="trang_thai" class="form-control" >
-                        <option value="">-- Lựa chọn --</option>
-                        <option value="0">Còn hàng</option>
-                        <option value="1">Hết hàng</option>
+                        <option selected disabled>-- Lựa chọn --</option>
+                        <option value="1">Đang bán</option>
+                        <option value="2">Ngừng bán</option>
                     </select>
-                    <?php if (isset($_SESSION['err']['trang_thai'])) { ?>
-                        <p class="text-danger"><?= $_SESSION['err']['trang_thai'] ?></p>
+                    <?php if (isset($err['trang_thai'])) { ?>
+                        <p class="text-danger"><?= $err['trang_thai'] ?></p>
                     <?php } ?>
 
                     

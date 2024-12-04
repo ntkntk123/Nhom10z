@@ -32,7 +32,23 @@ class User
 
     public function postRegister($ten_khach_hang, $user, $pass, $phone, $email)
     {
+        // Biến lưu trữ thông báo lỗi
+        $errUser = '';
+        
         try {
+            // Kiểm tra xem username đã tồn tại chưa
+            $sqlCheck = 'SELECT COUNT(*) FROM khach_hang WHERE username = :username';
+            $stmtCheck = $this->conn->prepare($sqlCheck);
+            $stmtCheck->execute([':username' => $user]);
+            $count = $stmtCheck->fetchColumn();
+            
+            if ($count > 0) {
+                // Nếu username đã tồn tại, gán thông báo lỗi vào biến $errUser
+                $errUser = "Tên người dùng đã tồn tại.";
+                return $errUser;  // Trả về thông báo lỗi
+            }
+    
+            // Nếu username chưa tồn tại, thực hiện câu lệnh INSERT
             $sql = 'INSERT INTO khach_hang (ten_khach_hang, username, phone, password, email)
                     VALUES(:ten_khach_hang, :username, :phone, :password, :email)';
             $stmt = $this->conn->prepare($sql);
@@ -43,12 +59,15 @@ class User
                 ':password' => $pass,
                 ':email' => $email
             ]);
+    
             return true;
         } catch (Exception $e) {
-            return "Lỗi: " . $e->getMessage();
+            // Lỗi xảy ra, gán thông báo lỗi vào biến $errUser
+            $errUser = "Lỗi: " . $e->getMessage();
+            return $errUser;
         }
     }
-
+    
     //lấy id để sửa
     public function getUserId($id)
     {
@@ -63,13 +82,13 @@ class User
     }
 
 
-    public function postUpdateUser($id, $ten_khach_hang, $user, $pass, $email, $phone, $trang_thai, $role)
+    public function postUpdateUser($id, $trang_thai, $role)
     {
         try {
-            $sql = 'UPDATE khach_hang SET  ten_khach_hang=:ten_khach_hang, username=:username, password=:password , email=:email, phone=:phone, trang_thai=:trang_thai, role=:role
+            $sql = 'UPDATE khach_hang SET trang_thai=:trang_thai, role=:role
             WHERE id_khach_hang=:id_khach_hang';
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':id_khach_hang' => $id, ':ten_khach_hang' => $ten_khach_hang, ':username' => $user, ':email' => $email, ':phone' => $phone, ':password' => $pass, ':trang_thai' => $trang_thai, ':role' => $role]);
+            $stmt->execute([':id_khach_hang' => $id,  ':trang_thai' => $trang_thai, ':role' => $role]);
             return true;
         } catch (Exception $e) {
             echo "Lỗi: " . $e->getMessage();

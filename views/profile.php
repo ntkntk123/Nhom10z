@@ -1,8 +1,8 @@
 <?php
-// profile.php
-
-// Khởi động session để kiểm tra nếu người dùng đã đăng nhập
-session_start();
+// Kiểm tra nếu session chưa được khởi động, mới gọi session_start()
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Kiểm tra nếu người dùng chưa đăng nhập thì chuyển hướng đến trang login
 if (!isset($_SESSION['username'])) {
@@ -25,6 +25,7 @@ if (!$user) {
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -246,7 +247,7 @@ if (!$user) {
         <h2 class="text-center">Thông Tin Khách Hàng</h2>
         <div class="user-info">
             <p><strong>Tên:</strong> <?php echo htmlspecialchars($user['ten_khach_hang']); ?></p>
-            <p><strong>Phone:</strong> <?php $user['phone'] ?></p>
+            <p><strong>Phone:</strong> <?php echo htmlspecialchars($user['phone']); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
             <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
         </div>

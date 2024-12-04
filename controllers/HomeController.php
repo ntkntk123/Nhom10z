@@ -16,6 +16,11 @@ class HomeController
         $listProducts = $this->modelProducts->getAllProducts();
         require_once './views/trangchu.php';
     }
+    public function quanlibinhluan()
+    {
+        $listProducts = $this->modelProducts->getAllProducts();
+        require_once './admin/quanlibinhluan.php';
+    }
     public function profile()
     {
         $listProducts = $this->modelProducts->getAllProducts();
@@ -26,12 +31,6 @@ class HomeController
         $listProducts = $this->modelProducts->getAllProducts();
         require_once './views/lsu.php';
     }
-    public function cart()
-    {
-        $listProducts = $this->modelProducts->getAllProducts();
-        require_once './views/giohang.php';
-    }
-
     public function trangsanpham()
     {
         $listProducts = $this->modelProducts->getProducts();
@@ -39,20 +38,18 @@ class HomeController
     }
 
     
-    public function hienThi()
-    {
-        $danhmucs = $this->modelProducts->getDanhMuc();
+    public function hienThi() {
+        $danhmucs = $this->modelProducts->getDanhMuc();     
         if (empty($danhmucs)) {
             echo "Không có danh mục nào.";
             return;
-        }
+        } 
         $sanPhamDanhMuc = [];
         foreach ($danhmucs as $danhmuc) {
             $sanPhamDanhMuc[$danhmuc['id_danh_muc']] = $this->modelProducts->getSanPhamDanhMuc($danhmuc['id_danh_muc']);
         }
-        include 'views/sanpham.php';
+        include 'views/sanpham.php'; 
     }
-
     public function quanLiSanPham()
     {
         $listProducts = $this->modelProducts->getAllProducts();
@@ -79,29 +76,27 @@ class HomeController
     {
         $danhmucs = $this->modelProducts->getDanhMuc();
         require_once './admin/formAddSanPham.php';
-        deleteSessionError();
+        // deleteSessionError();
     }
 
     public function postAddSanPham()
     {
 
         if (isset($_POST['ten_san_pham'])) {
-            $ma_san_pham = $_POST['ma_san_pham'];
-            $ten_san_pham = $_POST['ten_san_pham'] ;
-            $id_danh_muc = $_POST['id_danh_muc'] ;
-            $mo_ta = $_POST['mo_ta'];
-            $gia = $_POST['gia'] ;
-            $so_luong = $_POST['so_luong'];
-            $trang_thai = $_POST['trang_thai'] ;
-            $hinh_anh = $_FILES['hinh_anh'];
+            
+            $ten_san_pham = $_POST['ten_san_pham'] ?? '' ;
+            $id_danh_muc = $_POST['id_danh_muc'] ?? '' ;
+            $mo_ta = $_POST['mo_ta'] ?? '';
+            $gia = $_POST['gia'] ?? '';
+            $so_luong = $_POST['so_luong'] ?? '';
+            $trang_thai = $_POST['trang_thai'] ?? '';
+            $hinh_anh = $_FILES['hinh_anh'] ?? null;
 
 
             $img_array = $_FILES['img_array'];
 
             $err = [];
-            if (empty($ma_san_pham)) {
-                $err['ma_san_pham'] = "Mã sản phẩm không được bỏ trống.";
-            }
+          
             if (empty($ten_san_pham)) {
                 $err['ten_san_pham'] = "Tên sản phẩm không được bỏ trống.";
             }
@@ -114,22 +109,22 @@ class HomeController
             if (empty($so_luong)) {
                 $err['so_luong'] = "Số lượng sản phẩm không được để trống.";
             }
-            if (empty($trang_thai) < 0) {
+            if (empty($trang_thai)) {
                 $err['trang_thai'] = "Vui lòng chọn trạng thái";
             }
-            if ($hinh_anh['error'] !== 0) {
-                $err['hinh_anh'] = "Chọn hình ảnh.";
-            }
+            // if ($hinh_anh['error'] !== 0) {
+            //     $err['hinh_anh'] = "Chọn hình ảnh.";
+            // }
 
-            $_SESSION['err'] = $err;
+            // $_SESSION['err'] = $err;
 
             if (empty($err)) {
-                $this->modelProducts->postAddSanPham($ma_san_pham, $ten_san_pham, $id_danh_muc, $mo_ta, $gia, $trang_thai, $so_luong, uploadFile($hinh_anh, './uploads/'));
+                $this->modelProducts->postAddSanPham( $ten_san_pham, $id_danh_muc, $mo_ta, $gia, $trang_thai, $so_luong, uploadFile($hinh_anh, './uploads/'));
                 header("Location: ?act=quanlisanpham");
             } else {
                 require_once './admin/formAddSanPham.php';
-                $_SESSION['flash'] = true;
-                header("location: ?act=formAddSanPham");
+                // $_SESSION['flash'] = true;
+                // header("location: ?act=quanlisanpham");
             }
 
 
@@ -138,6 +133,10 @@ class HomeController
             // }
         }
     }
+
+
+
+ 
 
     public function formUpdateSanPham()
     {
@@ -153,7 +152,7 @@ class HomeController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Lấy dữ liệu từ form
             $id_san_pham = $_POST['id_san_pham'];
-            $ma_san_pham = $_POST['ma_san_pham'];
+            
             $ten_san_pham = $_POST['ten_san_pham'];
             $gia = $_POST['gia'];
             $so_luong = $_POST['so_luong'];
@@ -174,8 +173,8 @@ class HomeController
             }
 
             // Gửi dữ liệu đến model để cập nhật       
-            if ($this->modelProducts->postUpdateSanPham($id_san_pham, $ma_san_pham, $ten_san_pham, $gia, $so_luong, $id_danh_muc, $mo_ta, $trang_thai, $new_image)) {
-                header("Location: ./");
+            if ($this->modelProducts->postUpdateSanPham($id_san_pham, $ten_san_pham, $gia, $so_luong, $id_danh_muc, $mo_ta, $trang_thai, $new_image)) {
+                header("Location: ?act=quanlisanpham");
             }
         }
     }
@@ -183,7 +182,7 @@ class HomeController
     public function deleteSanPham(){
         $id = $_GET['id_san_pham'];
         if ($this->modelProducts->deleteSanPham($id)) {
-            header("Location: ./");
+            header("Location: ?act=quanlisanpham");
             
         }
     }
@@ -232,6 +231,25 @@ class HomeController
             }
         }
     }
+
+    public function binhLuanTheoSanPham()
+    {
+        $id = $_GET['id_san_pham'];        
+        $product = $this->modelProducts->getIdSanPham($id);
+        $comments = $this->modelProducts->getCommentsByProduct($id);
+        if ($product) { 
+            require_once "./admin/binhluan.php";
+        } else {
+            header("Location: ?act=sanpham");
+        }
+    }
     
+
+    public function xoaBinhLuan(){
+        $id = $_GET['id_binh_luan']; 
+        if ($this->modelProducts->xoaBinhLuan($id)) {
+            header("Location: ?act=quanlibinhluan");
+        }
+    }
 
 }

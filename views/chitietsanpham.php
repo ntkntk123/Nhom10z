@@ -180,7 +180,7 @@
     </form>
 <?php else : ?>
     <p class="text-center mt-4">
-        Vui lòng <a href="<?= htmlspecialchars(BASE_URL . '?act=login') ?>" class="text-info fw-bold">đăng nhập</a> để bình luận.
+        Vui lòng <a href="?act=login" class="text-info fw-bold">đăng nhập</a> để bình luận.
     </p>
 <?php endif; ?>
 

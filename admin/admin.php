@@ -1,5 +1,9 @@
 <?php
 // session_start();
+// var_dump($_SESSION);
+if($_SESSION['role']!=1){
+header("location: ./");
+}
 ?>
 
 <!DOCTYPE html>
@@ -142,7 +146,7 @@
                         class="list-group-item list-group-item-action list-group-item-info">Quản lí danh mục</a>
                     <a href="?act=quanlisanpham"
                         class="list-group-item list-group-item-action list-group-item-info">Quản lí sản phẩm</a>
-                    <a href="" class="list-group-item list-group-item-action list-group-item-info">Quản lí bình luận</a>
+                    <a href="?act=quanlibinhluan" class="list-group-item list-group-item-action list-group-item-info">Quản lí bình luận</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Quản lí</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>

@@ -2,7 +2,7 @@
 // db.php
 
 // Bao gồm file cấu hình môi trường
-require_once './commonsz/env.php';
+require_once '../commonsz/env.php';
 
 try {
     // Tạo kết nối PDO với cơ sở dữ liệu MySQL
