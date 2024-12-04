@@ -38,3 +38,13 @@ function deleteFile($file){
         unlink($pathDelete);
     }
 }
+
+
+function deleteSessionError(){
+    if(isset($_SESSION['flash'])){
+        unset($_SESSION['flash']);
+        session_unset();
+        session_destroy();
+    }
+}
+       

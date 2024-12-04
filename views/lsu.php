@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 
 if (!isset($_SESSION['username'])) {
     header("Location: ./login/login.php");
@@ -8,6 +8,7 @@ if (!isset($_SESSION['username'])) {
 
 require_once 'db.php';
 
+// Lấy ID khách hàng từ bảng khach_hang
 $stmt = $conn->prepare("SELECT id_khach_hang FROM khach_hang WHERE username = :username");
 $stmt->bindParam(':username', $_SESSION['username']);
 $stmt->execute();
@@ -20,6 +21,7 @@ if (!$user) {
 
 $id_khach_hang = $user['id_khach_hang'];
 
+// Lấy thông tin đơn hàng của khách hàng
 $stmt = $conn->prepare("SELECT * FROM don_hang WHERE id_khach_hang = :id_khach_hang");
 $stmt->bindParam(':id_khach_hang', $id_khach_hang);
 $stmt->execute();
@@ -115,6 +117,7 @@ if (!$orders) {
         .order-history-table tbody tr:hover {
             background-color: #f8f9fa;
         }
+        
         footer {
             background-color: #f1f1f1;
             padding: 40px 0;
@@ -206,6 +209,7 @@ if (!$orders) {
         </div>
     </div>
 </header>
+
 <div class="container my-5">
     <div class="order-history-table">
         <h2 class="text-center">Lịch Sử Đơn Hàng</h2>
@@ -216,7 +220,7 @@ if (!$orders) {
                     <th>Mã Đơn Hàng</th>
                     <th>Ngày Đặt Hàng</th>
                     <th>Tổng Giá</th>
-                    <th>Trạng Thái</th>
+                    <th>SDT</th>
                     <th>Địa Chỉ Nhận Hàng</th>
                 </tr>
             </thead>
@@ -225,27 +229,15 @@ if (!$orders) {
                 if (count($orders) > 0) {
                     $stt = 1;
                     foreach ($orders as $order) {
-                        switch ($order['trang_thai']) {
-                            case 0:
-                                $status = "Đang chuẩn bị hàng";
-                                break;
-                            case 1:
-                                $status = "Đang giao";
-                                break;
-                            case 2:
-                                $status = "Đã giao thành công";
-                                break;
-                            default:
-                                $status = "Không xác định";
-                        }
-
+                        // Chuyển đổi trạng thái thành văn bản
+                       
                         echo "<tr>";
                         echo "<td>" . $stt . "</td>";
                         echo "<td>" . htmlspecialchars($order['id_don_hang']) . "</td>";
                         echo "<td>" . htmlspecialchars($order['ngay_dat_hang']) . "</td>";
-                        echo "<td>" . number_format($order['tong_gia'], 0, ',', '.') . " VNĐ</td>";
-                        echo "<td><span class='badge bg-" . ($order['trang_thai'] == 0 ? 'info' : ($order['trang_thai'] == 1 ? 'warning' : 'success')) . "'>" . $status . "</span></td>";
-                        echo "<td>" . htmlspecialchars($order['dia_chi_nhan_hang']) . "</td>";
+                        echo "<td>" . number_format($order['tong_tien'], 0, ',', '.') . " VNĐ</td>";
+                        echo "<td>" . htmlspecialchars($order['phone']) . "</td>";
+                        echo "<td>" . htmlspecialchars($order['dia_chi']) . "</td>";
                         echo "</tr>";
 
                         $stt++;
@@ -256,7 +248,7 @@ if (!$orders) {
         </table>
     </div>
 </div>
-<br><br><br><br>
+
 <footer>
     <div class="container d-flex justify-content-between">
         <div class="footer-section">

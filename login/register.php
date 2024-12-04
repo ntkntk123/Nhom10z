@@ -106,7 +106,7 @@
         }
 
         /* Error message style */
-        #errUser {
+        .text-danger {
             font-size: 12px;
             color: red;
             margin-top: -8px;
@@ -199,16 +199,28 @@
 
     <div class="register-form">
         <h2>Đăng Ký</h2>
-        <form action="./?act=register" method="POST">
-    <input type="text" name="username" id="username" placeholder="Tên tài khoản" required>
-    <input type="text" name="ten_khach_hang" id="ten_khach_hang" placeholder="Tên khách hàng" required>
-    <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
-    <input type="password" name="password2" id="password2" placeholder="Xác nhận mật khẩu" required>
-    <input type="email" name="email" id="email" placeholder="Email" required>
-    <input type="number" name="phone" id="phone" placeholder="Số điện thoại" required>
-    <button type="submit">Đăng ký</button>
-</form>
-
+        <form action="./?act=register" method="POST" id="registerForm">
+            <input type="text" name="username" id="username" placeholder="Tên tài khoản" required>
+            <span id="errUsername" class="text-danger"></span>
+            <span id="errUsername" class="text-danger"><?php echo isset($errUser) ? $errUser : ''; ?></span>
+            
+            <input type="text" name="ten_khach_hang" id="ten_khach_hang" placeholder="Tên khách hàng" required>
+            <span id="errTenKhachHang" class="text-danger"></span>
+            
+            <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
+            <span id="errPassword" class="text-danger"></span>
+            
+            <input type="password" name="password2" id="password2" placeholder="Xác nhận mật khẩu" required>
+            <span id="errPassword2" class="text-danger"></span>
+            
+            <input type="email" name="email" id="email" placeholder="Email" required>
+            <span id="errEmail" class="text-danger"></span>
+            
+            <input type="number" name="phone" id="phone" placeholder="Số điện thoại" required>
+            <span id="errPhone" class="text-danger"></span>
+            
+            <button type="submit">Đăng ký</button>
+        </form>
         <p>Đã có tài khoản? <a href="?act=login">Đăng nhập ngay</a></p>
     </div>
 
@@ -233,6 +245,50 @@
         </div>
         <button class="feedback-button btn btn-danger w-100">Give Feedback</button>
     </footer>
+
+    <script>
+        document.querySelector("#registerForm").addEventListener("submit", function (e) {
+            let isValid = true;
+            let errMsg = "";
+
+            // Lấy giá trị từ các trường
+            const username = document.getElementById("username").value.trim();
+            const tenKhachHang = document.getElementById("ten_khach_hang").value.trim();
+            const password = document.getElementById("password").value;
+            const password2 = document.getElementById("password2").value;
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+
+            // Xóa lỗi cũ
+            document.querySelectorAll(".text-danger").forEach(e => e.textContent = "");
+
+            // Kiểm tra các trường không được để trống
+            if (!username) {
+                document.getElementById("errUsername").textContent = "Tên tài khoản không được để trống.";
+                isValid = false;
+            } else if (!tenKhachHang) {
+                document.getElementById("errTenKhachHang").textContent = "Tên khách hàng không được để trống.";
+                isValid = false;
+            } else if (password.length < 6) {
+                document.getElementById("errPassword").textContent = "Mật khẩu phải có ít nhất 6 ký tự.";
+                isValid = false;
+            } else if (password !== password2) {
+                document.getElementById("errPassword2").textContent = "Xác nhận mật khẩu không khớp.";
+                isValid = false;
+            } else if (!/\S+@\S+\.\S+/.test(email)) {
+                document.getElementById("errEmail").textContent = "Email không hợp lệ.";
+                isValid = false;
+            } else if (!/^\d{10,11}$/.test(phone)) {
+                document.getElementById("errPhone").textContent = "Số điện thoại không hợp lệ (10-11 chữ số).";
+                isValid = false;
+            }
+
+            // Nếu có lỗi, ngăn submit và hiển thị thông báo
+            if (!isValid) {
+                e.preventDefault(); // Ngăn form gửi đi
+            }
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

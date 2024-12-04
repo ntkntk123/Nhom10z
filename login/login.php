@@ -1,13 +1,36 @@
 <?php
-session_start();
+// Kiểm tra nếu session chưa được khởi tạo thì gọi session_start()
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Xử lý form đăng nhập
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Kiểm tra dữ liệu đăng nhập (thay thế bằng logic thực tế)
+    if (empty($username)) {
+        $err = "Tên đăng nhập không được để trống!";
+    } elseif (empty($password)) {
+        $err = "Mật khẩu không được để trống!";
+    } else {
+        // Giả sử đăng nhập thành công (kiểm tra với cơ sở dữ liệu)
+        $_SESSION["username"] = $username;
+        header("Location: ./index.php"); // Chuyển hướng sau khi đăng nhập thành công
+        exit();
+    }
+}
 ?>
 
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Men's Clothing Store</title>
+    <title>Đăng Nhập</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         footer {
@@ -222,6 +245,8 @@ footer .feedback-button:hover {
 </head>
 
 <body>
+
+    <!-- Header Section -->
     <header>
         <div class="container">
             <div class="logo"></div>
@@ -251,14 +276,17 @@ footer .feedback-button:hover {
             </div>
         </div>
     </header>
-<br><br>
+
+    <!-- Login Form Section -->
     <div class="login-form">
         <h2>Đăng Nhập</h2>
-        <form id="loginForm" action="?act=login" method="POST">
-            <input type="text" name="username" id="username" placeholder="Tên đăng nhập">
-            <span id="errUser"></span>
+        <form id="loginForm" action="" method="POST" onsubmit="return validateForm()">
+            <input type="text" name="username" id="username" placeholder="Tên đăng nhập" value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>">
+            <span id="errUser" style="color:red"><?php echo isset($err) && !empty($err) && strpos($err, 'Tên đăng nhập') !== false ? $err : ''; ?></span>
             <input id="password" type="password" name="password" placeholder="Mật khẩu">
-            <?php if (!empty($err)): ?>
+            <span id="errPassword" style="color:red"><?php echo isset($err) && !empty($err) && strpos($err, 'Mật khẩu') !== false ? $err : ''; ?></span>
+            
+            <?php if (isset($err) && empty($username) && strpos($err, 'Tên đăng nhập') === false): ?>
                 <p style="color: red;"><?php echo ($err); ?></p>
             <?php endif; ?>
             
@@ -266,7 +294,8 @@ footer .feedback-button:hover {
         </form>
         <p>Chưa có tài khoản? <a href="?act=formRegister">Đăng ký ngay</a></p>
     </div>
-<br><br><br><br><br><br>
+
+    <!-- Footer Section -->
     <footer>
         <div class="container">
             <div class="footer-section">
@@ -289,6 +318,34 @@ footer .feedback-button:hover {
         <button class="feedback-button btn btn-danger w-100">Give Feedback</button>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateForm() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            var usernameError = document.getElementById('errUser');
+            var passwordError = document.getElementById('errPassword');
+            var formIsValid = true;
+
+            // Clear previous error messages
+            usernameError.innerHTML = "";
+            passwordError.innerHTML = "";
+
+            // Validate username
+            if (username === "") {
+                usernameError.innerHTML = "Tên đăng nhập không được để trống!";
+                formIsValid = false;
+            }
+
+            // Validate password
+            if (password === "") {
+                passwordError.innerHTML = "Mật khẩu không được để trống!";
+                formIsValid = false;
+            }
+
+            return formIsValid;
+        }
+    </script>
 </body>
+
 </html>

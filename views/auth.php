@@ -1,6 +1,6 @@
 <?php
 // Khởi tạo session
-session_start();
+// session_start();
 
 // Kiểm tra nếu người dùng đã đăng nhập (kiểm tra session user_id)
 if (!isset($_SESSION['user_id'])) {

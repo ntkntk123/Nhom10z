@@ -1,5 +1,8 @@
 <?php
-session_start();
+// session_start();
+if($_SESSION['role']!=1){
+    header("location: ./");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -134,7 +137,7 @@ session_start();
     <div class="container-fluid mt-3">
         <div class="row">
 
-            <div class="col-4">
+            <div class="col-2">
 
                 <div class="list-group">
                     <a href="?act=admin" class="list-group-item list-group-item-action list-group-item-info">Quản
@@ -151,7 +154,7 @@ session_start();
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-10">
                 <div class="register-form">
                     <h2>Thêm User</h2>
                     <form action="./?act=register" method="POST">

@@ -1,5 +1,6 @@
 <?php
 // session_start();
+var_dump($product['trang_thai']);
 if($_SESSION['role']!=1){
     header("location: ./");
     }
@@ -11,7 +12,7 @@ if($_SESSION['role']!=1){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update User</title>
+    <title>Sửa sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .logo {
@@ -137,7 +138,7 @@ if($_SESSION['role']!=1){
     <div class="container-fluid mt-3">
         <div class="row">
 
-            <div class="col-2">
+            <div class="col-4">
 
                 <div class="list-group">
                     <a href="?act=admin" class="list-group-item list-group-item-action list-group-item-info">Quản
@@ -154,43 +155,48 @@ if($_SESSION['role']!=1){
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>
             </div>
-            <div class="col-10">
-                <h1>Cập nhật thông tin khách hàng</h1>
-                <form action="./?act=updateUser" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id_khach_hang" value="<?php echo $user['id_khach_hang'] ?>">
+            <div class="col-8">
+            <h1>Sửa Sản Phẩm</h1>
+<form action="./?act=postUpdateSanPham" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id_san_pham" value="<?php echo $product['id_san_pham']; ?>">
+    <input type="hidden" name="old_hinh_anh" value="<?php echo $product['hinh_anh']; ?>">
 
-                    <label for="ten_khach_hang">Tên khách hàng</label><br>
-                    <input type="text" class="form-control" disabled value="<?php echo $user['ten_khach_hang'] ?>" name="ten_khach_hang"><br>
+    
 
-                    <label for="username">Username</label><br>
-                    <input type="text" class="form-control" disabled value="<?php echo $user['username'] ?>" name="username"><br>
+    <label for="ten_san_pham">Tên sản phẩm</label>
+    <input type="text" name="ten_san_pham" value="<?php echo htmlspecialchars($product['ten_san_pham']); ?>" class="form-control">
 
-                    <label for="password">Password</label><br>
-                    <input type="password" class="form-control" disabled value="<?php echo $user['password'] ?>" name="password"><br>
+    <label for="gia">Giá</label>
+    <input type="number" name="gia" value="<?php echo $product['gia']; ?>" class="form-control">
 
-                    <label for="phone">Số điện thoại</label><br>
-                    <input type="text" class="form-control" disabled value="<?php echo $user['phone'] ?>" name="phone"><br>
+    <label for="so_luong">Số lượng</label>
+    <input type="number" name="so_luong" value="<?php echo $product['so_luong']; ?>" class="form-control">
 
-                    <label for="email">Email</label><br>
-                    <input type="email" class="form-control" disabled value="<?php echo $user['email'] ?>" name="email"><br>
+    <label for="id_danh_muc">Danh mục</label>
+    <select name="id_danh_muc" class="form-control">
+        <option selected disabled>-- Lựa chọn --</option>
+        <?php foreach ($danhmucs as $danhmuc): ?>
+            <option value="<?= $danhmuc['id_danh_muc'] ?>" <?= $product['id_danh_muc'] == $danhmuc['id_danh_muc'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($danhmuc['ten_danh_muc']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
-                    <label for="trang_thai">Trạng thái</label><br>
-                    <select name="trang_thai" class="form-control" id="trang_thai">
-                        <option value="0">Hiện</option>
-                        <option value="1">Ẩn</option>
-                    </select>
-                    <br>
-                    <label for="role">Quyền Admin</label><br>
-                    <select name="role" id="role" class="form-control">
-                        <option value="">-- Lựa chọn --</option>
-                        <option value="0">Không</option>
-                        <option value="1">Có</option>
-                    </select>
+    <label for="mo_ta">Mô tả</label>
+    <textarea name="mo_ta" class="form-control"><?php echo htmlspecialchars($product['mo_ta']); ?></textarea>
 
-                    <center> <button class="btn btn-outline-primary mt-3">Cập nhật</button></center>
+    <label for="trang_thai">Trạng thái</label>
+    <select name="trang_thai" class="form-control">
+        <option value="1" <?= $product['trang_thai'] == 1 ? 'selected' : '' ?>>Đang bán</option>
+        <option value="2" <?= $product['trang_thai'] == 2 ? 'selected' : '' ?>>Ngừng bán</option>
+    </select>
 
-                </form>
+    <label for="hinh_anh">Hình ảnh</label>
+    <img src="<?php echo $product['hinh_anh']; ?>" alt="" width="100">
+    <input type="file" name="hinh_anh" class="form-control">
 
+    <center><button type="submit" class="btn btn-success">Sửa sản phẩm</button></center>
+</form>
 
             </div>
         </div>

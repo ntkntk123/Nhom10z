@@ -1,8 +1,8 @@
 <?php
 // session_start();
-if($_SESSION['role']!=1){
-    header("location: ./");
-    }
+if(($_SESSION['role'] != 1)){
+    header("Location: ?act=/");
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +11,7 @@ if($_SESSION['role']!=1){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update User</title>
+    <title>Quản lí sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .logo {
@@ -141,55 +141,52 @@ if($_SESSION['role']!=1){
 
                 <div class="list-group">
                     <a href="?act=admin" class="list-group-item list-group-item-action list-group-item-info">Quản
-                        lí khách
-                        hàng</a>
-                    <a href="#" class="list-group-item list-group-item-action list-group-item-info">Quản lí danh
-                        mục</a>
+                        lí khách hàng</a>
+                    <a href="#" class="list-group-item list-group-item-action list-group-item-info">Quản lí danh mục</a>
                     <a href="?act=quanlisanpham"
-                        class="list-group-item list-group-item-action list-group-item-info">Quản lí
-                        sản phẩm</a>
-                    <a href="" class="list-group-item list-group-item-action list-group-item-info">Quản lí bình
-                        luận</a>
+                        class="list-group-item list-group-item-action list-group-item-info">Quản lí sản phẩm</a>
+                    <a href="" class="list-group-item list-group-item-action list-group-item-info">Quản lí bình luận</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Quản lí</a>
                     <a href="#" class="list-group-item list-group-item-action list-group-item-info">Thống kê</a>
                 </div>
             </div>
             <div class="col-10">
-                <h1>Cập nhật thông tin khách hàng</h1>
-                <form action="./?act=updateUser" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id_khach_hang" value="<?php echo $user['id_khach_hang'] ?>">
+                <h1>Quản lí bình luận</h1>
+               
+                <?php if (!empty($comments)): ?>
+    <table class="table table-striped table-bordered mt-3" border="1">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Id bình luận</th>
+                <th>Id khách hàng</th>
+                <th>Nội dung</th>
+                <th>Ngày tạo</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($comments as $index => $comment): ?>
+                <tr>
+                    <td><?php echo $index + 1; ?></td>
+                    <td><?php echo htmlspecialchars($comment['id_binh_luan']); ?></td>
+                    <td><?php echo htmlspecialchars($comment['id_khach_hang']); ?></td>
+                    <td><?php echo nl2br(htmlspecialchars($comment['noi_dung'])); ?></td>
+                    <td><?php echo date('d/m/Y H:i', strtotime($comment['ngay_tao'])); ?></td>
+                    <td>
+                        
+                    <a href="?act=deleteBinhLuan&id_binh_luan=<?php echo $comment['id_binh_luan']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
 
-                    <label for="ten_khach_hang">Tên khách hàng</label><br>
-                    <input type="text" class="form-control" disabled value="<?php echo $user['ten_khach_hang'] ?>" name="ten_khach_hang"><br>
-
-                    <label for="username">Username</label><br>
-                    <input type="text" class="form-control" disabled value="<?php echo $user['username'] ?>" name="username"><br>
-
-                    <label for="password">Password</label><br>
-                    <input type="password" class="form-control" disabled value="<?php echo $user['password'] ?>" name="password"><br>
-
-                    <label for="phone">Số điện thoại</label><br>
-                    <input type="text" class="form-control" disabled value="<?php echo $user['phone'] ?>" name="phone"><br>
-
-                    <label for="email">Email</label><br>
-                    <input type="email" class="form-control" disabled value="<?php echo $user['email'] ?>" name="email"><br>
-
-                    <label for="trang_thai">Trạng thái</label><br>
-                    <select name="trang_thai" class="form-control" id="trang_thai">
-                        <option value="0">Hiện</option>
-                        <option value="1">Ẩn</option>
-                    </select>
-                    <br>
-                    <label for="role">Quyền Admin</label><br>
-                    <select name="role" id="role" class="form-control">
-                        <option value="">-- Lựa chọn --</option>
-                        <option value="0">Không</option>
-                        <option value="1">Có</option>
-                    </select>
-
-                    <center> <button class="btn btn-outline-primary mt-3">Cập nhật</button></center>
-
-                </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <div class="alert alert-info" role="alert">
+        Không có bình luận nào để hiển thị.
+    </div>
+<?php endif; ?>
 
 
             </div>

@@ -24,6 +24,7 @@ class UserController{
                 $_SESSION['username'] = $username;
                 $_SESSION['password'] = $password;
                 $_SESSION['role'] = $user['role'];
+                $_SESSION['id_khach_hang'] = $user['id_khach_hang'];
                 $_SESSION['trang_thai'] = $user['trang_thai'];
     
                 if ($user['trang_thai'] == 0) {
@@ -42,8 +43,6 @@ class UserController{
                 $err = "Tài khoản hoặc mật khẩu không chính xác.";
             }
         }
-    
-        
         require './login/login.php';
     }
     
@@ -65,19 +64,49 @@ class UserController{
         require_once './login/register.php';
     }
     public function register(){
+        $errUser = '';  // Biến chứa lỗi đăng ký
+    
         if (isset($_POST['username'])) {
             $user = $_POST['username'];
-            $ten_khach_hang=$_POST['ten_khach_hang'];
-            $phone=$_POST['phone'];
+            $ten_khach_hang = $_POST['ten_khach_hang'];
+            $phone = $_POST['phone'];
             $email = $_POST['email'];
-            $pass=$_POST['password'];
-            $pass2=$_POST['password2'];
-      
-            if ($this->modelUser->postRegister($ten_khach_hang, $user,  $pass,$phone, $email, $pass2)) {
-                header("Location: ./");
+            $pass = $_POST['password'];
+            $pass2 = $_POST['password2'];
+    
+            // Kiểm tra nếu mật khẩu xác nhận khớp
+            if ($pass !== $pass2) {
+                $errUser = 'Mật khẩu xác nhận không khớp!';
+            } else {
+                // Gọi phương thức postRegister và nhận kết quả
+                $result = $this->modelUser->postRegister($ten_khach_hang, $user, $pass, $phone, $email);
+    
+                // Kiểm tra nếu kết quả là lỗi
+                if ($result !== true) {
+                    $errUser = $result;  // Lỗi từ phương thức postRegister
+                }
+            }
+    
+            // Nếu không có lỗi, chuyển hướng và thông báo thành công
+            if (empty($errUser)) {
+                echo "<script>
+                    alert('Đăng ký thành công!');
+                    window.location.href = './';  // Chuyển hướng về trang chủ sau khi đăng ký thành công
+                </script>";
+                exit();
+            } else {
+                // Nếu có lỗi, chuyển hướng về trang chủ và hiển thị thông báo lỗi
+                echo "<script>
+                    alert('Đăng ký thất bại: $errUser');
+                    window.location.href = './';  // Chuyển hướng về trang chủ
+                </script>";
+                exit();
             }
         }
     }
+    
+    
+    
 
     //hiển thị danh sách user để quản lí 
     public function listUser(){
@@ -97,20 +126,11 @@ class UserController{
     public function postUpdateUser(){
         if (isset($_POST['id_khach_hang'])) {
             $id = $_POST['id_khach_hang'];
-            $ten_khach_hang=$_POST['ten_khach_hang'];
-            $user = $_POST['username'];
-            $pass = $_POST['password'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
+            
             $trang_thai=$_POST['trang_thai'];
-            $role = $_POST['role'];
- 
-            
-
-           
-            
-            if ($this->modelUser->postUpdateUser($id, $ten_khach_hang, $user, $pass,$email, $phone, $trang_thai, $role)) {
-                header("Location: ./");
+            $role = $_POST['role'];     
+            if ($this->modelUser->postUpdateUser($id,  $trang_thai, $role)) {
+                header("Location: ?act=admin");
             }
         }
     }
@@ -118,7 +138,7 @@ class UserController{
     public function deleteUser(){
         $id = $_GET['id_khach_hang'];
         if ($this->modelUser->deleteUser($id)) {
-            header("Location: ./");
+            header("Location: ?act=admin");
             
         }
     }
